@@ -256,7 +256,6 @@ Interactively, prompts for the method to use."
    (list (y-or-n-p "Can you use a GitHub account for issue reporting? ")))
   (if use-github
       (browse-url "https://github.com/liblit/demangle-mode/issues")
-    (require 'pkg-info)
     (require 'reporter)
     (let ((reporter-prompt-for-summary-p t))
       (reporter-submit-bug-report
