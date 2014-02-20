@@ -207,6 +207,7 @@ either \"_GLOBAL__I_\" or \"_GLOBAL__D_\": these are global
 constructors or destructors (respectively), mangled using a
 Linux/GCC scheme that extends beyond the Itanium ABI.")
 
+;;;###autoload
 (define-minor-mode demangle-mode
   "Toggle demangle mode.
 Interactively with no argument, this command toggles the mode.  A
