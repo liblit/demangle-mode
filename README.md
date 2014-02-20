@@ -109,7 +109,7 @@ command. On GNU systems, this is installed as part of
 [`binutils`](http://www.gnu.org/software/binutils/). Anyone interested
 in demangling at all would surely already have `binutils` installed.
 
-# Known Bugs and Design Limitations
+# Known Issues and Design Limitations
 
 When showing the demangled version of a symbol using a boxed face, the
 right edge of the box is <span style="border: 1px solid gray;
