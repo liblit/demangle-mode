@@ -27,7 +27,7 @@
 ;;; Commentary:
 
 ;; `demangle-mode' is an Emacs minor mode that automatically demangles
-;; C++ symbols. For example, in this mode:
+;; C++ symbols.  For example, in this mode:
 
 ;; - `_ZN9wikipedia7article6formatE' displays as `wikipedia::article::format'
 ;; - `_ZNSaIcED2Ev' displays as `std::allocator<char>::~allocator()'
