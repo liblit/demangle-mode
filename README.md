@@ -125,8 +125,9 @@ not yet done so.
 The faces used for <span style="border: 1px solid gray">mangled</span>
 and <span style="border: 1px solid gray">demangled</span> symbols are
 identical to each other, and picked somewhat arbitrarily. I welcome
-suggestions for nicer ways to mark such symbols or distinguish the
-mangled and demangled variants.
+[suggestions](https://github.com/liblit/demangle-mode/issues) for
+nicer ways to mark such symbols or distinguish the mangled and
+demangled variants.
 
 Building atop `font-lock-mode` dramatically simplifies keeping
 demangled symbols current as buffer contents change. However, some
