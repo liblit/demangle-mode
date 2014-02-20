@@ -130,6 +130,15 @@ already.
 
 # Known Issues and Design Limitations
 
+The standard
+[search commands](http://www.gnu.org/software/emacs/manual/html_node/emacs/Incremental-Search.html)
+are unaware of demangled symbol text. If `_ZNSaIcED2Ev` is being
+displayed as <span title="_ZNSaIcED2Ev" style="border:  1px solid
+gray">`std::allocator<char>::~allocator()`</span>,
+[incremental search](http://www.gnu.org/software/emacs/manual/html_node/emacs/Incremental-Search.html)
+and related commands will find this text as a match for `SaI` but not
+for `::`.
+
 When showing the demangled version of a symbol using a boxed face, the
 right edge of the box is <span style="border: 1px solid gray;
 border-right: none">missing</span>. This seems to be a bad interaction
