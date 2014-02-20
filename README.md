@@ -18,14 +18,28 @@ mode:
   style="border: 1px solid gray">`global constructors keyed to
   xyz`</span>
 
-# Quick Start: How to Use
+# How to Use
 
-Use `M-x demangle-mode` to toggle demangling on or off in any
-buffer. You will probably want to turn on font-lock-mode as well,
-since `demangle-mode` uses `font-lock-mode` to automate symbol
-recognition and demangling.
+## Quick Start
 
-If you always want demangling on in certain major modes, then add
+Save `demangle-mode.el` somewhere in your Emacs
+[`load-path`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html). Use
+`M-x load-library RET demangle-mode RET` to load the package. Now use
+`M-x demangle-mode` to toggle demangling on or off in any buffer. You
+will probably want to turn on font-lock-mode as well, since
+`demangle-mode` uses `font-lock-mode` to automate symbol recognition
+and demangling.
+
+## Advanced Usage
+
+If you will be using `demangle-mode` regularly, add `(require
+'demangle-mode)` to your Emacs
+[init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html). To
+load this package on-demand, add `(autoload 'demangle-mode
+"demangle-mode" nil t)` to your init file instead of the `require`
+code.
+
+If you always want demangling on in certain major modes, add
 `demangle-mode` to the appropriate major-mode hook, such as:
 
 ```elisp
@@ -46,9 +60,29 @@ the following text as `.dir-locals.el` in that same directory:
   (eval . (demangle-mode 1))))
 ```
 
+## Customization
+
 Explore the `demangle-mode` customization group for configurable
 options that affect this mode’s behavior: `M-x customize-group RET
-demangle-mode RET`.
+demangle-mode RET`. You can choose between two styles of showing
+mangled/demangled symbols:
+
+- show the demangled symbol (read-only) on screen, with the original
+  mangled symbol available as a help message or tooltip; or
+
+- show the mangled symbol on screen, with the demangled symbol
+  available as a help message or tooltip.
+
+Customization changes the default style.  A mode-specific menu allows
+switching between these styles per-buffer when `demangle-mode` is on.
+
+Additionally, you can customize the display face (font, color,
+underline, etc.) used for highlighting mangled and demangled
+symbols. The default highlighting face uses a <span style="border: 1px
+solid gray">thin gray box</span> or <span style="text-decoration:
+underline; text-decoration-color: gray; text-decoration-style:
+wavy">wavy gray underline</span>, depending on the output terminal’s
+capabilities.
 
 # Background and Motivation
 
