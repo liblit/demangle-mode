@@ -135,10 +135,10 @@ users may be surprised when they turn on `demangle-mode` without
 this will play out as a real problem in practice, or how to improve
 things it if it is indeed a recurring source of confusion.
 
-Demangling in an asynchronous background process is important for
-performance but significantly complicates the
-implementation. Demangling directly within Emacs would be simpler and
-probably faster. However, I know of no pure Emacs Lisp implementation
-of name demangling and do not wish to create one myself. Demanglers as
-C libraries do exist, but Emacs offers no in-process way to call into
-such a library.
+Demangling in an asynchronous background process boosts performance
+over running `c++filt` separately for each symbol. Unfortunately this
+also significantly complicates the implementation. Demangling directly
+within Emacs would be simpler and probably faster. However, I know of
+no pure Emacs Lisp implementation of name demangling and do not wish
+to create one myself. Demanglers as C libraries do exist, but Emacs
+offers no in-process way to call into such a library.
