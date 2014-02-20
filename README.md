@@ -77,11 +77,11 @@ and understand. `demangle-mode`
 
 `demangle-mode` uses
 [`font-lock-mode`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html)
-to recognize and change the display style of mangled
-symbols. Typically, if you want `demangle-mode` on in some buffer,
-then you should turn on `font-lock-mode` as well. It is possible to
-turn on `demangle-mode` without `font-lock-mode`, but in that case
-demangling will only be done when explicitly requested (e.g., via `M-x
+to recognize and change the display style of mangled symbols. If you
+want `demangle-mode` on in some buffer, you should usually turn on
+`font-lock-mode` as well. It is possible to turn on `demangle-mode`
+without `font-lock-mode`, but in that case demangling will only be
+done when explicitly requested (e.g., via `M-x
 font-lock-fontify-buffer`) rather than automatically.
 
 `demangle-mode` sets the
