@@ -36,8 +36,8 @@
 ;; - `_GLOBAL__D_xyz' displays as `global constructors keyed to xyz'
 
 ;; See <https://github.com/liblit/demangle-mode#readme> for additional
-;; documentation, including background, motivation, usage suggestions,
-;; compatibility notes, known issues, and design notes.
+;; documentation: usage suggestions, background & motivation,
+;; compatibility notes, and known issues & design limitations.
 
 ;;; Code:
 
