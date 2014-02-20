@@ -77,7 +77,8 @@ mangled, and therefore hard to read. For example, inspecting
 [LLVM assembly source](http://llvm.org/docs/LangRef.html) produced by
 the Clang C++ compiler reveals many raw, mangled symbols. It can be
 useful to demangle these in-place to make such files easier to read
-and understand. `demangle-mode` scratches that itch.
+and understand. `demangle-mode`
+[scratches that itch](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s02.html).
 
 # Compatibility Notes
 
