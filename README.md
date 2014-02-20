@@ -20,11 +20,11 @@ C++ symbols. For example, in this mode:
 ## Quick Start
 
 Save `demangle-mode.el` somewhere in your Emacs
-[`load-path`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html). Use
-`M-x load-library RET demangle-mode RET` to load the package. Now use
-`M-x demangle-mode` to toggle demangling on or off in any buffer. Turn
-on `font-lock-mode` as well:  `demangle-mode` uses this to stay in
-sync as buffer contents change.
+[`load-path`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html).
+Use `M-x load-library RET demangle-mode RET` to load the package. Now
+use `M-x demangle-mode` to toggle demangling on or off in any
+buffer. Turn on `font-lock-mode` as well:  `demangle-mode` uses this
+to stay in sync as buffer contents change.
 
 ## Advanced Usage
 
