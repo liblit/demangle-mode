@@ -4,7 +4,7 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Package-Version: 0.3
+;; Package-Version: 0.4
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: c tools
 
@@ -38,6 +38,10 @@
 ;; See <https://github.com/liblit/demangle-mode#readme> for additional
 ;; documentation: usage suggestions, background & motivation,
 ;; compatibility notes, and known issues & design limitations.
+
+;; Visit <https://github.com/liblit/demangle-mode/issues> or use
+;; command `demangle-mode-submit-bug-report' to report bugs or offer
+;; suggestions for improvement.
 
 ;;; Code:
 
@@ -178,7 +182,7 @@ this matched region's display style accordingly."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  minor mode and mode-specific menu
+;;  minor mode
 ;;
 
 (defconst demangle-mode-map (make-sparse-keymap)
@@ -212,7 +216,11 @@ the mode, while `toggle' toggles the state.
 
 When Demangle mode is enabled, mangled C++ symbols appearing
 within the buffer are demangled, making their decoded C++ forms
-visible."
+visible.
+
+Visit `https://github.com/liblit/demangle-mode/issues' or use
+\\[demangle-mode-submit-bug-report] to report bugs in
+`demangle-mode'."
   :lighter " Demangle"
   :keymap demangle-mode-map
   (if demangle-mode
@@ -226,6 +234,44 @@ visible."
     (font-lock-remove-keywords nil demangle-font-lock-keywords))
   (demangle-font-lock-refresh))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  bug reporting
+;;
+
+(defconst demangle-mode-version "0.4"
+  "Package version number for use in bug reports.")
+
+(defconst demangle-mode-maintainer-address "Ben Liblit <liblit@acm.org>"
+  "Package maintainer name and e-mail address for use in bug reports.")
+
+(defun demangle-mode-submit-bug-report (use-github)
+  "Report a `demangle-mode' bug.
+If USE-GITHUB is non-nil, directs web browser to GitHub issue
+tracker.  This is the preferred reporting channel.  Otherwise,
+initiates (but does not send) e-mail to the package maintainer.
+Interactively, prompts for the method to use."
+  (interactive
+   (list (y-or-n-p "Can you use a GitHub account for issue reporting? ")))
+  (if use-github
+      (browse-url "https://github.com/liblit/demangle-mode/issues")
+    (require 'pkg-info)
+    (require 'reporter)
+    (let ((reporter-prompt-for-summary-p t))
+      (reporter-submit-bug-report
+     demangle-mode-maintainer-address
+     (concat "demangle-mode.el " demangle-mode-version)
+     (list 'demangle-mode
+	   'demangle-show-as
+	   'demangler-queue
+	   'font-lock-mode
+	   'font-lock-keywords)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; mode-specific menu
+;;
+
 (easy-menu-define nil demangle-mode-map nil
   '("Demangle"
     ["Show Demangled Symbols"
@@ -237,10 +283,10 @@ visible."
      :style radio
      :selected (eq demangle-show-as 'mangled)]
     "-"
+    ["Report bug in minor mode" demangle-mode-submit-bug-report]
     ;; standard menu items copied from `minor-mode-menu-from-indicator'
     ["Turn Off minor mode" (demangle-mode 0)]
     ["Help for minor mode" (describe-function 'demangle-mode)]))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;   
 ;;
