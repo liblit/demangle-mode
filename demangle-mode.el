@@ -4,7 +4,7 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Package-Version: 0.4
+;; Version: 0.4
 ;; Package-Requires: ((emacs "24.3"))
 ;; Keywords: c tools
 
