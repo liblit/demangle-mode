@@ -26,11 +26,8 @@
 
 ;;; Commentary:
 
-;; This package provides `demangle-mode': a minor mode for
-;; automatically demangling C++ symbols embedded in Emacs buffers.
-;; With `demangle-mode' on, mangled symbols are automatically
-;; recognized and demangled, then displayed according to various user
-;; preferences.  For example, in this mode:
+;; `demangle-mode' is an Emacs minor mode that automatically demangles
+;; C++ symbols. For example, in this mode:
 
 ;; - `_ZN9wikipedia7article6formatE' displays as `wikipedia::article::format'
 ;; - `_ZNSaIcED2Ev' displays as `std::allocator<char>::~allocator()'
