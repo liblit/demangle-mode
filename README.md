@@ -32,13 +32,6 @@ If you always want demangling on in certain major modes, then add
 (add-hook 'llvm-mode-hook 'demangle-mode)
 ```
 
-If you always want demangling on in certain major modes, then add
-`demangle-mode` to the appropriate major-mode hook, such as:
-
-```elisp
-(add-hook 'llvm-mode-hook 'demangle-mode)
-```
-
 [File](https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html)
 and
 [directory](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html)
