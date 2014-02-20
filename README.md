@@ -1,8 +1,5 @@
-This package provides `demangle-mode`: a minor mode for automatically
-demangling C++ symbols embedded in Emacs buffers. With `demangle-mode`
-on, mangled symbols are automatically recognized and demangled, then
-displayed according to various user preferences. For example, in this
-mode:
+`demangle-mode` is an Emacs minor mode that automatically demangles
+C++ symbols. For example, in this mode:
 
 - `_ZN9wikipedia7article6formatE` displays as <span
   title="_ZN9wikipedia7article6formatE" style="border: 1px solid
@@ -25,19 +22,17 @@ mode:
 Save `demangle-mode.el` somewhere in your Emacs
 [`load-path`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html). Use
 `M-x load-library RET demangle-mode RET` to load the package. Now use
-`M-x demangle-mode` to toggle demangling on or off in any buffer. You
-will probably want to turn on font-lock-mode as well, since
-`demangle-mode` uses `font-lock-mode` to automate symbol recognition
-and demangling.
+`M-x demangle-mode` to toggle demangling on or off in any buffer. Turn
+on `font-lock-mode` as well:  `demangle-mode` uses this to stay in
+sync as buffer contents change.
 
 ## Advanced Usage
 
-If you will be using `demangle-mode` regularly, add `(require
-'demangle-mode)` to your Emacs
-[init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html). To
-load this package on-demand, add `(autoload 'demangle-mode
-"demangle-mode" nil t)` to your init file instead of the `require`
-code.
+If you use `demangle-mode` often, add `(require 'demangle-mode)` to
+your Emacs
+[init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html)
+to load it at start-up. To load this package on-demand, add `(autoload
+'demangle-mode "demangle-mode" nil t)` to your init file instead.
 
 If you always want demangling on in certain major modes, add
 `demangle-mode` to the appropriate major-mode hook, such as:
@@ -49,11 +44,11 @@ If you always want demangling on in certain major modes, add
 [File](https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html)
 and
 [directory](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html)
-variables allow turning on demangling more selectively. For example,
-`-*- eval: (demangle-mode 1) -*-` anywhere on the first line of a file
-will turn on `demangle-mode` for that file only. To activate
-demangling for all LLVM assembly files in a specific directory, save
-the following text as `.dir-locals.el` in that same directory:
+variables allow selective activation. For example, `-*- eval:
+(demangle-mode 1) -*-` anywhere on the first line of a file will turn
+on `demangle-mode` for that file only. To activate demangling for all
+LLVM assembly files in a specific directory, save the following text
+as `.dir-locals.el` in that same directory:
 
 ```elisp
 ((llvm-mode
@@ -90,21 +85,18 @@ capabilities.
 of encoding additional information in the name of a function,
 structure, class or another datatype in order to pass more semantic
 information from the compilers to linkers.” For example, a C++
-function named `print` taking a single `int` parameter might be
-mangled as `_Z5printi`. A different `print` function taking two chars
-might mangle to `_Z5printcc`, thereby distinguishing the two
-same-named overloads.
+function named `print` taking a single `int` parameter might mangle to
+`_Z5printi`. A different `print` function taking two chars might
+mangle to `_Z5printcc`. This lets linkers and other tools distinguish
+the two functions.
 
-Most programmer-facing tools (e.g., compilers or linkers) that work
-with C++ decode (“demangle”) these encoded symbols back to their
-human-readable forms when producing output (e.g., error
-messages). However, sometimes we find ourselves working with “raw”
-views of code or other data in which mangled symbols are still
-mangled, and therefore hard to read. For example, inspecting
-[LLVM assembly source](http://llvm.org/docs/LangRef.html) produced by
-the Clang C++ compiler reveals many raw, mangled symbols. It can be
-useful to demangle these in-place to make such files easier to read
-and understand. `demangle-mode`
+Most programmer-facing C++ tools demangle symbols back to their
+human-readable forms when producing output. Sometimes, though, we must
+work with “raw” text containing mangled, hard-to-read symbols. For
+example, [LLVM assembly source](http://llvm.org/docs/LangRef.html)
+from the [Clang C++ compiler](http://clang.llvm.org/) contains many
+raw, mangled symbols. It can be useful to demangle these in-place to
+make such files easier to read and understand. `demangle-mode`
 [scratches that itch](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s02.html).
 
 # Compatibility Notes
@@ -113,28 +105,28 @@ and understand. `demangle-mode`
 [`font-lock-mode`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html)
 to recognize and change the display style of mangled symbols. If you
 want `demangle-mode` on in some buffer, you should usually turn on
-`font-lock-mode` as well. It is possible to turn on `demangle-mode`
-without `font-lock-mode`, but in that case demangling will only be
-done when explicitly requested (e.g., via `M-x
-font-lock-fontify-buffer`) rather than automatically.
+`font-lock-mode` as well. If you use `demangle-mode` without
+`font-lock-mode`, demangling happens only when explicitly requested
+(e.g., via `M-x font-lock-fontify-buffer`).
 
 `demangle-mode` sets the
 [`help-echo`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html)
 and
 [`display`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html)
-text properties on mangled symbols. This could potentially interfere
-with other packages or user actions that set these properties.
+text properties on mangled symbols. This could interfere with other
+packages or user actions that set these properties.
 
-`demangle-mode` recognizes symbols mangled using the popular
+`demangle-mode` recognizes the popular
 [Itanium ABI mangling scheme](http://mentorembedded.github.io/cxx-abi/abi.html#mangling)
-as well as a small number of Linux/GCC extensions to that
-scheme. Other mangled forms could be added easily if needed.
+plus a few Linux/GCC extensions. Adding other mangled forms would be
+easy, if needed.
 
 Demangling uses the
 [`c++filt`](https://sourceware.org/binutils/docs-2.24/binutils/c_002b_002bfilt.html)
-command. On GNU systems, this is installed as part of
-[`binutils`](http://www.gnu.org/software/binutils/). Anyone interested
-in demangling at all would surely already have `binutils` installed.
+command. On GNU systems, this is part of
+[`binutils`](http://www.gnu.org/software/binutils/). If you need
+`demangle-mode` at all, you probably have `binutils` installed
+already.
 
 # Known Issues and Design Limitations
 
@@ -145,9 +137,8 @@ between the
 [`:box`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html)
 face attribute and the
 [`display`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html)
-text property. This should be
-[reported as an Emacs bug](http://debbugs.gnu.org/Emacs.html); I have
-not yet done so.
+text property. I have not yet
+[reported this as an Emacs bug](http://debbugs.gnu.org/Emacs.html).
 
 The faces used for <span style="border: 1px solid gray">mangled</span>
 and <span style="border: 1px solid gray">demangled</span> symbols are
@@ -156,17 +147,15 @@ identical to each other, and picked somewhat arbitrarily. I welcome
 nicer ways to mark such symbols or distinguish the mangled and
 demangled variants.
 
-Building atop `font-lock-mode` dramatically simplifies keeping
-demangled symbols current as buffer contents change. However, some
-users may be surprised when they turn on `demangle-mode` without
-`font-lock-mode` and nothing seems to happen. I am not sure whether
-this will play out as a real problem in practice, or how to improve
-things it if it is indeed a recurring source of confusion.
+Building atop `font-lock-mode` simplifies keeping demangled symbols
+current as buffer contents change. However, this may surprise a user
+who turns on `demangle-mode` without `font-lock-mode`, then sees
+nothing happen.
 
-Demangling in an asynchronous background process boosts performance
-over running `c++filt` separately for each symbol. Unfortunately this
-also significantly complicates the implementation. Demangling directly
-within Emacs would be simpler and probably faster. However, I know of
-no pure Emacs Lisp implementation of name demangling and do not wish
-to create one myself. Demanglers as C libraries do exist, but Emacs
-offers no in-process way to call into such a library.
+Running `c++filt` once per symbol is too slow. Instead, we demangle in
+an asynchronous background process. This boosts performance but
+complicates the implementation. Demangling directly within Emacs would
+be clean and fast. Unfortunately, I know of no pure Emacs Lisp
+implementation of name demangling and do not wish to create one
+myself. Demanglers as C libraries do exist, but Emacs offers no
+in-process way to call into such a library.
