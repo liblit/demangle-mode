@@ -101,8 +101,9 @@ This changes the style for the current buffer only.  Use the
 option `demangle-show-as' to change the default style for all new
 buffers."
   (interactive
-   (list (intern (completing-read "Show demangled symbols as: "
-				  '("demangled" "mangled")))))
+   (list (intern (let ((completion-ignore-case t))
+		   (completing-read "Show demangled symbols as demangled or mangled: "
+				  '("demangled" "mangled"))))))
   (make-local-variable 'demangle-show-as)
   (set-variable 'demangle-show-as style)
   (demangle-font-lock-refresh))
