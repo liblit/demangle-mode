@@ -1,4 +1,4 @@
-;;; demangle-mode.el --- Automatically demangle C++ symbols found in buffers
+;;; demangle-mode.el --- Automatically demangle C++ symbols
 
 ;; Copyright (C) 2014 Ben Liblit
 
