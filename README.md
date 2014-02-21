@@ -1,9 +1,6 @@
 `demangle-mode` is an Emacs minor mode that automatically demangles
 C++ symbols. For example, in this mode:
 
-- `_ZN9wikipedia7article6formatE` displays as <span
-  title="_ZN9wikipedia7article6formatE" style="border: 1px solid
-  gray">`wikipedia::article::format`</span>
 - `_ZNSaIcED2Ev` displays as <span title="_ZNSaIcED2Ev" style="border:
   1px solid gray">`std::allocator<char>::~allocator()`</span>
 - `_ZTISt10ostrstream` displays as <span title="_ZTISt10ostrstream"
@@ -11,9 +8,6 @@ C++ symbols. For example, in this mode:
 - `_GLOBAL__I_abc` displays as <span title="_GLOBAL__I_abc"
   style="border: 1px solid gray">`global constructors keyed to
   abc`</span>
-- `_GLOBAL__D_xyz` displays as <span title="_GLOBAL__D_xyz"
-  style="border: 1px solid gray">`global constructors keyed to
-  xyz`</span>
 
 # How to Use
 

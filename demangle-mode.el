@@ -29,11 +29,9 @@
 ;; `demangle-mode' is an Emacs minor mode that automatically demangles
 ;; C++ symbols.  For example, in this mode:
 
-;; - `_ZN9wikipedia7article6formatE' displays as `wikipedia::article::format'
 ;; - `_ZNSaIcED2Ev' displays as `std::allocator<char>::~allocator()'
 ;; - `_ZTISt10ostrstream' displays as `typeinfo for std::ostrstream'
 ;; - `_GLOBAL__I_abc' displays as `global constructors keyed to abc'
-;; - `_GLOBAL__D_xyz' displays as `global constructors keyed to xyz'
 
 ;; See <https://github.com/liblit/demangle-mode#readme> for additional
 ;; documentation: usage suggestions, background & motivation,
