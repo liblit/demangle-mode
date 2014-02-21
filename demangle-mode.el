@@ -98,7 +98,6 @@ style."
 
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
-
 This changes the style for the current buffer only.  Use the
 option `demangle-show-as' to change the default style for all new
 buffers."
