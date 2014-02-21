@@ -171,11 +171,12 @@ Once demangling is complete, `demangler-answer-received' updates
 this matched region's display style accordingly."
   (demangler-start)
   (let* ((mangled (match-string 0))
-	 (question (concat mangled "\n")))
-    (cl-assert (pcase (match-data)
+	 (question (concat mangled "\n"))
+	 (match-data (match-data)))
+    (cl-assert (pcase match-data
 		 (`(,(pred markerp) ,(pred markerp)) t)))
     (tq-enqueue demangler-queue question "\n"
-		(cons mangled (match-data)) #'demangler-answer-received)))
+		(cons mangled match-data) #'demangler-answer-received)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
