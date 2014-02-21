@@ -4,8 +4,8 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 0.4
-;; Package-Requires: ((emacs "24.3"))
+;; Version: 0.4.1
+;; Package-Requires: ((emacs "24") (cl-lib "0.1")
 ;; Keywords: c tools
 
 ;; This file is free software; you can redistribute it and/or modify
