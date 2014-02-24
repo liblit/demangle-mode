@@ -27,11 +27,12 @@ to stay in sync as buffer contents change.
 
 ## Advanced Usage
 
-If you use `demangle-mode` often, add `(require 'demangle-mode)` to
-your Emacs
-[init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html)
-to load it at start-up. To load this package on-demand, add `(autoload
-'demangle-mode "demangle-mode" nil t)` to your init file instead.
+If you did not install from the
+[<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/demangle-mode)
+repository, add `(autoload 'demangle-mode "demangle-mode" nil t)` to
+your
+[Emacs init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html)
+to load `demangle-mode` whenever you start Emacs.
 
 If you always want demangling on in certain major modes, add
 `demangle-mode` to the appropriate major-mode hook, such as:
