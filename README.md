@@ -146,8 +146,8 @@ between the
 [`:box`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html)
 face attribute and the
 [`display`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html)
-text property. I have not yet
-[reported this as an Emacs bug](http://debbugs.gnu.org/Emacs.html).
+text property. I have
+[reported this as an Emacs bug](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16870).
 
 The faces used for <span style="border: 1px solid gray">mangled</span>
 and <span style="border: 1px solid gray">demangled</span> symbols are
