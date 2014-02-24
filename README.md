@@ -14,7 +14,7 @@ C++ symbols. For example, in this mode:
 ## Quick Start
 
 Install `demangle-mode` from the fantastic
-[<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/demangle-mode)
+[<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/getting-started)
 repository. Or
 [save `demangle-mode.el`](https://raw2.github.com/liblit/demangle-mode/master/demangle-mode.el)
 somewhere in your Emacs
@@ -28,7 +28,7 @@ to stay in sync as buffer contents change.
 ## Advanced Usage
 
 If you did not install from the
-[<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/demangle-mode)
+[<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/getting-started)
 repository, add `(autoload 'demangle-mode "demangle-mode" nil t)` to
 your
 [Emacs init file](http://www.gnu.org/software/emacs/manual/html_node/elisp/Init-File.html)
