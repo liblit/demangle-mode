@@ -190,7 +190,7 @@ changing the display style of demangled symbols (see option
 `demangle-show-as').")
 
 (defconst demangle-font-lock-keywords
-  '(("\\_<\\(?:_Z\\|_GLOBAL__[DI]_\\)[_[:alnum:]]+\\_>"
+  '(("\\_<\\(?:_Z\\|_GLOBAL__[DI]_\\)[_+[:alnum:]]+\\_>"
      0
      (progn
        (demangler-demangle)
