@@ -193,12 +193,12 @@ changing the display style of demangled symbols (see option
 `demangle-show-as').")
 
 (defconst demangle-font-lock-keywords
-  `((,(rx (sequence (or (not (any ?_ alnum))
-			line-start)
-		    (group (sequence (or "_Z"
-					 (sequence "_GLOBAL__"
-						   (any ?D ?I)))
-				     (one-or-more (any ?_ alnum))))))
+  `((,(rx (and (or (not (any ?_ alnum))
+		   line-start)
+	       (group (and (or "_Z"
+			       (and "_GLOBAL__"
+				    (any ?D ?I)))
+			   (one-or-more (any ?_ alnum))))))
      1
      (progn
        (demangler-demangle)
