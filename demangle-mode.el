@@ -4,7 +4,7 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 0.4.2
+;; Version: 0.5
 ;; Package-Requires: ((emacs "24") (cl-lib "0.1"))
 ;; Keywords: c tools
 
@@ -51,6 +51,9 @@
 (require 'cl-lib)
 (require 'easymenu)
 (require 'tq)
+
+(eval-when-compile
+  (require 'rx))
 
 (defgroup demangle-mode nil
   "Automatically demangle C++ symbols found in buffers."
@@ -169,13 +172,13 @@ Demangling proceeds in the background, though `demangler-queue'.
 Once demangling is complete, `demangler-answer-received' updates
 this matched region's display style accordingly."
   (demangler-start)
-  (let* ((mangled (match-string 0))
+  (let* ((mangled (match-string 1))
 	 (question (concat mangled "\n"))
 	 (match-data (match-data)))
     (cl-assert (pcase match-data
-		 (`(,(pred markerp) ,(pred markerp)) t)))
+		 (`(,_ ,_ ,(pred markerp) ,(pred markerp)) t)))
     (tq-enqueue demangler-queue question "\n"
-		(cons mangled match-data) #'demangler-answer-received)))
+		(cons mangled (cddr match-data)) #'demangler-answer-received)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,8 +193,13 @@ changing the display style of demangled symbols (see option
 `demangle-show-as').")
 
 (defconst demangle-font-lock-keywords
-  '(("\\_<\\(?:_Z\\|_GLOBAL__[DI]_\\)[_[:alnum:]]+\\_>"
-     0
+  `((,(rx (sequence (or (not (any ?_ alnum))
+			line-start)
+		    (group (sequence (or "_Z"
+					 (sequence "_GLOBAL__"
+						   (any ?D ?I)))
+				     (one-or-more (any ?_ alnum))))))
+     1
      (progn
        (demangler-demangle)
        (list 'face demangle-show-as))
