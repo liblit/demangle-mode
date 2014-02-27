@@ -141,13 +141,10 @@ for `::`.
 
 When showing the demangled version of a symbol using a boxed face, the
 right edge of the box is <span style="border: 1px solid gray;
-border-right: none">missing</span>. This seems to be a bad interaction
-between the
-[`:box`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html)
-face attribute and the
-[`display`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Special-Properties.html)
-text property. I have
-[reported this as an Emacs bug](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16870).
+border-right: none">missing</span>. This is a
+[known bug](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16870);
+[the fix](http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/116585)
+will appear in some future Emacs release.
 
 The faces used for <span style="border: 1px solid gray">mangled</span>
 and <span style="border: 1px solid gray">demangled</span> symbols are
