@@ -4,7 +4,7 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 0.5
+;; Version: 1.0
 ;; Package-Requires: ((emacs "24") (cl-lib "0.1"))
 ;; Keywords: c tools
 
@@ -246,7 +246,7 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 ;;  bug reporting
 ;;
 
-(defconst demangle-mode-version "0.4.2"
+(defconst demangle-mode-version "1.0"
   "Package version number for use in bug reports.")
 
 (defconst demangle-mode-maintainer-address "Ben Liblit <liblit@acm.org>"
