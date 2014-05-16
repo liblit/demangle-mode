@@ -107,7 +107,7 @@ buffers."
   (interactive
    (list (intern (let ((completion-ignore-case t))
 		   (completing-read "Show demangled symbols as demangled or mangled: "
-				  '("demangled" "mangled"))))))
+				    '("demangled" "mangled"))))))
   (make-local-variable 'demangle-show-as)
   (set-variable 'demangle-show-as style)
   (demangle-font-lock-refresh))
@@ -265,13 +265,13 @@ Interactively, prompts for the method to use."
     (require 'reporter)
     (let ((reporter-prompt-for-summary-p t))
       (reporter-submit-bug-report
-     demangle-mode-maintainer-address
-     (concat "demangle-mode.el " demangle-mode-version)
-     (list 'demangle-mode
-	   'demangle-show-as
-	   'demangler-queue
-	   'font-lock-mode
-	   'font-lock-keywords)))))
+       demangle-mode-maintainer-address
+       (concat "demangle-mode.el " demangle-mode-version)
+       (list 'demangle-mode
+	     'demangle-show-as
+	     'demangler-queue
+	     'font-lock-mode
+	     'font-lock-keywords)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
