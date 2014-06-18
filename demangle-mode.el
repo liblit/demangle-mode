@@ -154,13 +154,12 @@ the `demangler-queue'."
 	 (let ((mangled-current (buffer-substring start end)))
 	   (if (string= mangled-original mangled-current)
 	       (with-silent-modifications
-		 (cl-case demangle-show-as
+		 (cl-ecase demangle-show-as
 		   ('demangled
 		    (put-text-property start end 'display demangled)
 		    (put-text-property start end 'help-echo mangled-current))
 		   ('mangled
-		    (put-text-property start end 'help-echo demangled))
-		   (t (error "Unrecognized demangle display style `%s'" demangle-show-as))))
+		    (put-text-property start end 'help-echo demangled))))
 	     (warn "Mangled symbol changed from \"%s\" to \"%s\" while waiting for background demangler; leaving font-lock properties unchanged" mangled-original mangled-current))))))
     (_ (error "Malformed transaction queue closure `%s'" closure))))
 
