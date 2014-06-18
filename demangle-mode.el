@@ -175,10 +175,11 @@ this matched region's display style accordingly."
   (let* ((mangled (match-string 1))
 	 (question (concat mangled "\n"))
 	 (match-data (match-data)))
-    (cl-assert (pcase match-data
-		 (`(,_ ,_ ,(pred markerp) ,(pred markerp)) t)))
-    (tq-enqueue demangler-queue question "\n"
-		(cons mangled (cddr match-data)) #'demangler-answer-received)))
+    (pcase match-data
+      (`(,_ ,_ . ,(and markers `(,(pred markerp) ,(pred markerp))))
+       (tq-enqueue demangler-queue question "\n"
+		   (cons mangled markers) #'demangler-answer-received))
+      (_ (error "Malformed match data `%s'" match-data)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
