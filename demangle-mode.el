@@ -136,8 +136,8 @@ transaction queue restarts automatically when needed."
 	   (subprocess (start-process "demangler" nil "c++filt")))
       (set-process-query-on-exit-flag subprocess nil)
       (set-process-sentinel subprocess
-			    (function (lambda (process message)
-					(demangler-stop))))
+			    #'(lambda (process message)
+				(demangler-stop)))
       (setq demangler-queue (tq-create subprocess)))))
 
 (defun demangler-answer-received (closure answer)
