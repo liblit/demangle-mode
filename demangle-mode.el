@@ -1,4 +1,4 @@
-;;; demangle-mode.el --- Automatically demangle C++ symbols
+;;; demangle-mode.el --- Automatically demangle C++ symbols -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2014 Ben Liblit
 
@@ -137,7 +137,7 @@ transaction queue restarts automatically when needed."
 	   (subprocess (start-process "demangler" nil "c++filt")))
       (set-process-query-on-exit-flag subprocess nil)
       (set-process-sentinel subprocess
-			    #'(lambda (process message)
+			    #'(lambda (_process _message)
 				(demangler-stop)))
       (setq demangler-queue (tq-create subprocess)))))
 
@@ -263,7 +263,7 @@ Interactively, prompts for the method to use."
    (list (y-or-n-p "Can you use a GitHub account for issue reporting? ")))
   (if use-github
       (browse-url "https://github.com/liblit/demangle-mode/issues")
-    (require 'reporter)
+    (eval-when-compile (require 'reporter))
     (let ((reporter-prompt-for-summary-p t))
       (reporter-submit-bug-report
        demangle-mode-maintainer-address
