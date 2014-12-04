@@ -45,14 +45,14 @@ If you always want demangling on in certain major modes, add
 and
 [directory](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html)
 variables allow selective activation. For example, `-*- eval:
-(demangle-mode 1) -*-` anywhere on the first line of a file will turn
-on `demangle-mode` for that file only. To activate demangling for all
+(demangle-mode) -*-` anywhere on the first line of a file will turn on
+`demangle-mode` for that file only. To activate demangling for all
 LLVM assembly files in a specific directory, save the following text
 as `.dir-locals.el` in that same directory:
 
 ```elisp
 ((llvm-mode
-  (eval . (demangle-mode 1))))
+  (eval . (demangle-mode))))
 ```
 
 ## Customization
