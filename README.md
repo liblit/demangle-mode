@@ -141,10 +141,10 @@ for `::`.
 
 When showing the demangled version of a symbol using a boxed face, the
 right edge of the box is <span style="border: 1px solid gray;
-border-right: none">missing</span>. This is a
-[known bug](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16870);
+border-right: none">missing</span> in Emacs 24.3 and earlier. This was
+a [known bug](http://debbugs.gnu.org/cgi/bugreport.cgi?bug=16870);
 [the fix](http://bzr.savannah.gnu.org/lh/emacs/trunk/revision/116585)
-will appear in some future Emacs release.
+appears in Emacs 24.4 and later.
 
 The faces used for <span style="border: 1px solid gray">mangled</span>
 and <span style="border: 1px solid gray">demangled</span> symbols are
