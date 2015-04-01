@@ -72,7 +72,7 @@ mangled/demangled symbols:
 - show the mangled symbol on screen, with the demangled symbol
   available as a help message or tooltip.
 
-Customization changes the default style.  A mode-specific menu allows
+Customization changes the default style. A mode-specific menu allows
 switching between these styles per-buffer when `demangle-mode` is on.
 
 Additionally, you can customize the display face (font, color,
