@@ -1,3 +1,5 @@
+# Demangle Mode
+
 `demangle-mode` is an Emacs minor mode that automatically demangles
 C++ symbols. For example, in this mode:
 
@@ -9,9 +11,9 @@ C++ symbols. For example, in this mode:
   style="border: 1px solid gray">`global constructors keyed to
   abc`</span>
 
-# How to Use
+## How to Use
 
-## Quick Start
+### Quick Start
 
 Install `demangle-mode` from the fantastic
 [<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/getting-started)
@@ -25,7 +27,7 @@ Now use `M-x demangle-mode` to toggle demangling on or off in any
 buffer. Turn on `font-lock-mode` as well:  `demangle-mode` uses this
 to stay in sync as buffer contents change.
 
-## Advanced Usage
+### Advanced Usage
 
 If you did not install from the
 [<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](http://melpa.milkbox.net/#/getting-started)
@@ -55,7 +57,7 @@ as `.dir-locals.el` in that same directory:
   (eval . (demangle-mode))))
 ```
 
-## Customization
+### Customization
 
 Explore the `demangle-mode` customization group for configurable
 options that affect this mode’s behavior: `M-x customize-group RET
@@ -79,7 +81,7 @@ underline; text-decoration-color: gray; text-decoration-style:
 wavy">wavy gray underline</span>, depending on the output terminal’s
 capabilities.
 
-# Background and Motivation
+## Background and Motivation
 
 [Name mangling](https://en.wikipedia.org/wiki/Name_mangling) is “a way
 of encoding additional information in the name of a function,
@@ -99,7 +101,7 @@ raw, mangled symbols. It can be useful to demangle these in-place to
 make such files easier to read and understand. `demangle-mode`
 [scratches that itch](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s02.html).
 
-# Compatibility Notes
+## Compatibility Notes
 
 `demangle-mode` uses
 [`font-lock-mode`](https://www.gnu.org/software/emacs/manual/html_node/emacs/Font-Lock.html)
@@ -128,7 +130,7 @@ command. On GNU systems, this is part of
 `demangle-mode` at all, you probably have `binutils` installed
 already.
 
-# Known Issues and Design Limitations
+## Known Issues and Design Limitations
 
 The standard
 [search commands](http://www.gnu.org/software/emacs/manual/html_node/emacs/Incremental-Search.html)
