@@ -94,6 +94,7 @@ to interactively change this in a single buffer."
 
 (defun demangle-font-lock-refresh ()
   "Re-fontify the current buffer if option `font-lock-mode' is active.
+
 This is generally done when turning on command `demangle-mode' or
 using command `demangle-show-as' to change the demangled display
 style."
@@ -102,6 +103,7 @@ style."
 
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
+
 This changes the style for the current buffer only.  Use the
 option `demangle-show-as' to change the default style for all new
 buffers."
@@ -124,6 +126,7 @@ buffers."
 
 (defun demangler-stop ()
   "Stop the demangler subprocess and transaction queue.
+
 This is safe to call at any time; the demangler subprocess and
 transaction queue restarts automatically when needed."
   (when demangler-queue
@@ -143,6 +146,7 @@ transaction queue restarts automatically when needed."
 
 (defun demangler-answer-received (closure answer)
   "Process a response received from the demangler transaction queue.
+
 CLOSURE is a list (mangled start end) consisting of the original
 MANGLED symbol text and the START and END markers where this
 mangled text appeared.  ANSWER is the raw response received from
@@ -166,6 +170,7 @@ the `demangler-queue'."
 
 (defun demangler-demangle ()
   "Begin demangling a mangled symbol.
+
 Match data from the most recent regular expression search
 determines the location and text of the mangled symbol.
 Demangling proceeds in the background, though `demangler-queue'.
@@ -189,6 +194,7 @@ this matched region's display style accordingly."
 
 (defconst demangle-mode-map (make-sparse-keymap)
   "Extra key bindings for command `demangle-mode'.
+
 This provides a small mode-specific menu with options for
 changing the display style of demangled symbols (see option
 `demangle-show-as').")
@@ -206,6 +212,7 @@ changing the display style of demangled symbols (see option
        (list 'face demangle-show-as))
      prepend))
   "Font-lock patterns matching mangled C++ symbols.
+
 The standard patterns recognize two common families of mangled
 symbols.  The first consists of identifiers starting with \"_Z\":
 these have been mangled using the popular Itanium ABI mangling
@@ -217,6 +224,7 @@ Linux/GCC scheme that extends beyond the Itanium ABI.")
 ;;;###autoload
 (define-minor-mode demangle-mode
   "Toggle demangle mode.
+
 Interactively with no argument, this command toggles the mode.  A
 positive prefix argument enables the mode; any other prefix
 argument disables it.  From Lisp, argument omitted or nil enables
@@ -255,6 +263,7 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 
 (defun demangle-mode-submit-bug-report (use-github)
   "Report a `demangle-mode' bug.
+
 If USE-GITHUB is non-nil, directs web browser to GitHub issue
 tracker.  This is the preferred reporting channel.  Otherwise,
 initiates (but does not send) e-mail to the package maintainer.
