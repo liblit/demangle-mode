@@ -137,7 +137,7 @@ transaction queue restarts automatically when needed."
   "Start the demangler subprocess and transaction queue."
   (unless demangler-queue
     (let* ((process-connection-type nil)
-	   (subprocess (start-process "demangler" nil "c++filt")))
+	   (subprocess (start-process "demangler" nil "c++filt" "--no-strip-underscore")))
       (set-process-query-on-exit-flag subprocess nil)
       (set-process-sentinel subprocess
 			    (lambda (_process _message)
@@ -177,13 +177,14 @@ Demangling proceeds in the background, though `demangler-queue'.
 Once demangling is complete, `demangler-answer-received' updates
 this matched region's display style accordingly."
   (demangler-start)
-  (let* ((mangled (match-string 1))
-	 (question (concat mangled "\n"))
+  (let* ((mangled-with-prefix (match-string 1))
+	 (mangled-without-prefix (match-string 2))
+	 (question (concat mangled-without-prefix "\n"))
 	 (match-data (match-data)))
     (pcase match-data
-      (`(,_ ,_ . ,(and markers `(,(pred markerp) ,(pred markerp))))
+      (`(,_ ,_ ,(and marker-start (pred markerp)) ,(and marker-end (pred markerp)) ,_ ,_)
        (tq-enqueue demangler-queue question "\n"
-		   (cons mangled markers) #'demangler-answer-received))
+		   (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received))
       (_ (error "Malformed match data `%s'" match-data)))))
 
 
@@ -200,12 +201,13 @@ changing the display style of demangled symbols (see option
 `demangle-show-as').")
 
 (defconst demangle-font-lock-keywords
-  `((,(rx (and (or (not (any ?_ alnum))
-		   line-start)
-	       (group (and (or "_Z"
-			       (and "_GLOBAL__"
-				    (any ?D ?I)))
-			   (one-or-more (any ?_ alnum))))))
+  `((,(rx (sequence (or (not (any ?_ alnum))
+			line-start)
+		    (group (sequence (optional ?_)
+				     (group (or "_Z"
+						(sequence "_GLOBAL__"
+							  (any ?D ?I)))
+					    (one-or-more (any ?_ alnum)))))))
      1
      (progn
        (demangler-demangle)

@@ -125,6 +125,11 @@ packages or user actions that set these properties.
 plus a few Linux/GCC extensions. Adding other mangled forms would be
 easy, if needed.
 
+Mangled symbols may optionally begin with an extra leading underscore,
+as some platforms prefix all symbols in this manner. Both `_Z5printi`
+and `__Z5printi` demangle identically to `print(int)`, regardless of
+the host platform's prefixing conventions.
+
 Demangling uses the
 [`c++filt`](https://sourceware.org/binutils/docs-2.24/binutils/c_002b_002bfilt.html)
 command. On GNU systems, this is part of
