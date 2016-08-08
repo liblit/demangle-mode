@@ -99,7 +99,12 @@ This is generally done when turning on command `demangle-mode' or
 using command `demangle-show-as' to change the demangled display
 style."
   (when font-lock-mode
-    (font-lock-fontify-buffer)))
+    (if (fboundp 'font-lock-flush)
+	;; Emacs 25 and later
+	(font-lock-flush)
+      ;; Emacs 24.x and earlier
+      (with-no-warnings
+	(font-lock-fontify-buffer)))))
 
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
