@@ -138,15 +138,27 @@ transaction queue restarts automatically when needed."
     (tq-close demangler-queue)
     (setq demangler-queue nil)))
 
+(defun demangler-sentinel (_process _message)
+  "Stop the demangler queue if the demangler subprocess exits."
+  (demangler-stop))
+
 (defun demangler-start ()
   "Start the demangler subprocess and transaction queue."
   (unless demangler-queue
-    (let* ((process-connection-type nil)
-	   (subprocess (start-process "demangler" nil "c++filt" "--no-strip-underscore")))
-      (set-process-query-on-exit-flag subprocess nil)
-      (set-process-sentinel subprocess
-			    (lambda (_process _message)
-			      (demangler-stop)))
+    (let* ((subprocess
+	    (if (fboundp 'make-process)
+		;; Emacs 25 and later
+		(make-process :name "demangler"
+			      :command '("c++filt" "--no-strip-underscore")
+			      :noquery t
+			      :connection-type 'pipe
+			      :sentinel #'demangler-sentinel)
+	      ;; Emacs 24.x and earlier
+	      (let* ((process-connection-type nil)
+		     (subprocess (start-process "demangler" nil "c++filt" "--no-strip-underscore")))
+		(set-process-query-on-exit-flag subprocess nil)
+		(set-process-sentinel subprocess #'demangler-sentinel)
+		subprocess))))
       (setq demangler-queue (tq-create subprocess)))))
 
 (defun demangler-answer-received (closure answer)
