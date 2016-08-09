@@ -1,0 +1,24 @@
+# based on <https://github.com/sviridov/undercover.el-combined-usage-example/blob/master/.travis.yml>
+# based on <https://github.com/sandor-juhasz/huninet-mode/blob/master/.travis.yml>
+
+language: emacs-lisp
+sudo: no
+
+env:
+  - EVM_EMACS=emacs-24.1-travis
+  - EVM_EMACS=emacs-24.2-travis
+  - EVM_EMACS=emacs-24.3-travis
+  - EVM_EMACS=emacs-24.4-travis
+  - EVM_EMACS=emacs-24.5-travis
+  - EVM_EMACS=emacs-git-snapshot-travis
+
+before_install:
+  - curl --fail --silent --show-error --insecure --location --output travis.sh https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw
+  - source ./travis.sh
+  - evm install "$EVM_EMACS" --use --skip
+
+install:
+  - cask install
+
+script:
+  - cask exec ert-runner
