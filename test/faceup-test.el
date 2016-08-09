@@ -7,8 +7,6 @@
   (while (not (tq-queue-empty demangler-queue))
     (accept-process-output (tq-process demangler-queue) 5)))
 
-(ert-delete-all-tests)
-
 (dolist (raw-name (file-expand-wildcards "test/faceup/*.raw"))
   (dolist (show-as '(demangled mangled))
     (let* ((root-name (file-name-base raw-name))
