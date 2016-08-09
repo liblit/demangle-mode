@@ -175,13 +175,15 @@ the `demangler-queue'."
        (with-current-buffer buffer
 	 (let ((mangled-current (buffer-substring-no-properties start end)))
 	   (if (string= mangled-original mangled-current)
-	       (with-silent-modifications
-		 (cl-ecase demangle-show-as
-		   ('demangled
-		    (put-text-property start end 'display demangled)
-		    (put-text-property start end 'help-echo mangled-current))
-		   ('mangled
-		    (put-text-property start end 'help-echo demangled))))
+	       (unless (string= mangled-current demangled)
+		 (with-silent-modifications
+		   (font-lock-prepend-text-property start end 'face demangle-show-as)
+		   (cl-ecase demangle-show-as
+		     ('demangled
+		      (put-text-property start end 'display demangled)
+		      (put-text-property start end 'help-echo mangled-current))
+		     ('mangled
+		      (put-text-property start end 'help-echo demangled)))))
 	     (warn "Mangled symbol changed from \"%s\" to \"%s\" while waiting for background demangler; leaving font-lock properties unchanged" mangled-original mangled-current))))))
     (_ (error "Malformed transaction queue closure `%s'" closure))))
 
@@ -226,10 +228,7 @@ changing the display style of demangled symbols (see option
 							  (any ?D ?I)))
 					    (one-or-more (any ?_ alnum)))))))
      1
-     (progn
-       (demangler-demangle)
-       (list 'face demangle-show-as))
-     prepend))
+     (ignore (demangler-demangle))))
   "Font-lock patterns matching mangled C++ symbols.
 
 The standard patterns recognize two common families of mangled
