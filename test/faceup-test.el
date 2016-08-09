@@ -1,3 +1,6 @@
+(require 'undercover)
+(undercover)
+
 (require 'demangle-mode)
 (require 'ert)
 (require 'faceup)
