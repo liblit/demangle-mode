@@ -1,4 +1,4 @@
-# Demangle Mode
+# Demangle Mode <a href="https://travis-ci.org/liblit/demangle-mode"><img alt="Travis Build Status" align="right" src="https://travis-ci.org/liblit/demangle-mode.svg?branch=master" /></a>
 
 `demangle-mode` is an Emacs minor mode that automatically demangles
 C++ symbols. For example, in this mode:
