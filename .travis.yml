@@ -1,6 +1,3 @@
-# based on <https://github.com/sviridov/undercover.el-combined-usage-example/blob/master/.travis.yml>
-# based on <https://github.com/sandor-juhasz/huninet-mode/blob/master/.travis.yml>
-
 language: emacs-lisp
 sudo: no
 
