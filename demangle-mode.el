@@ -173,7 +173,7 @@ the `demangler-queue'."
      (let ((demangled (substring answer 0 -1))
 	   (buffer (marker-buffer start)))
        (with-current-buffer buffer
-	 (let ((mangled-current (buffer-substring start end)))
+	 (let ((mangled-current (buffer-substring-no-properties start end)))
 	   (if (string= mangled-original mangled-current)
 	       (with-silent-modifications
 		 (cl-ecase demangle-show-as
