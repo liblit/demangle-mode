@@ -187,24 +187,25 @@ the `demangler-queue'."
 	     (warn "Mangled symbol changed from \"%s\" to \"%s\" while waiting for background demangler; leaving font-lock properties unchanged" mangled-original mangled-current))))))
     (_ (error "Malformed transaction queue closure `%s'" closure))))
 
-(defun demangler-demangle ()
+(defun demangler-demangle (match-data)
   "Begin demangling a mangled symbol.
 
-Match data from the most recent regular expression search
-determines the location and text of the mangled symbol.
-Demangling proceeds in the background, though `demangler-queue'.
-Once demangling is complete, `demangler-answer-received' updates
-this matched region's display style accordingly."
-  (demangler-start)
-  (let* ((mangled-with-prefix (match-string 1))
-	 (mangled-without-prefix (match-string 2))
-	 (question (concat mangled-without-prefix "\n"))
-	 (match-data (match-data)))
-    (pcase match-data
-      (`(,_ ,_ ,(and marker-start (pred markerp)) ,(and marker-end (pred markerp)) ,_ ,_)
-       (tq-enqueue demangler-queue question "\n"
-		   (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received))
-      (_ (error "Malformed match data `%s'" match-data)))))
+MATCH-DATA from a recent regular expression search determines the
+location and text of the mangled symbol.  Demangling proceeds in
+the background, though `demangler-queue'.  Once demangling is
+complete, `demangler-answer-received' updates this matched
+region's display style accordingly."
+  (save-match-data
+    (demangler-start)
+    (set-match-data match-data)
+    (let* ((mangled-with-prefix (match-string 1))
+	   (mangled-without-prefix (match-string 2))
+	   (question (concat mangled-without-prefix "\n")))
+      (pcase match-data
+	(`(,_ ,_ ,(and marker-start (pred markerp)) ,(and marker-end (pred markerp)) ,_ ,_)
+	 (tq-enqueue demangler-queue question "\n"
+		     (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received))
+	(_ (error "Malformed match data `%s'" match-data))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -228,7 +229,7 @@ changing the display style of demangled symbols (see option
 							  (any ?D ?I)))
 					    (one-or-more (any ?_ alnum)))))))
      1
-     (ignore (demangler-demangle))))
+     (ignore (demangler-demangle (match-data)))))
   "Font-lock patterns matching mangled C++ symbols.
 
 The standard patterns recognize two common families of mangled
