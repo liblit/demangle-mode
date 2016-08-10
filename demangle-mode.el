@@ -158,31 +158,26 @@ transaction queue restarts automatically when needed."
 		subprocess))))
       (setq demangler-queue (tq-create subprocess)))))
 
-(defun demangler-answer-received (closure answer)
+(cl-defun demangler-answer-received ((mangled-original start end) answer)
   "Process a response received from the demangler transaction queue.
 
-CLOSURE is a list (mangled start end) consisting of the original
-MANGLED symbol text and the START and END markers where this
-mangled text appeared.  ANSWER is the raw response received from
+START and END are markers indicating where the MANGLED-ORIGINAL
+symbol text appeared.  ANSWER is the raw response received from
 the `demangler-queue'."
-  (pcase closure
-    (`(,mangled-original ,start ,end)
-     (let ((demangled (substring answer 0 -1))
-	   (buffer (marker-buffer start)))
-       (with-current-buffer buffer
-	 (let ((mangled-current (buffer-substring-no-properties start end)))
-	   (if (string= mangled-original mangled-current)
-	       (unless (string= mangled-current demangled)
-		 (with-silent-modifications
-		   (font-lock-prepend-text-property start end 'face demangle-show-as)
-		   (cl-ecase demangle-show-as
-		     ('demangled
-		      (put-text-property start end 'display demangled)
-		      (put-text-property start end 'help-echo mangled-current))
-		     ('mangled
-		      (put-text-property start end 'help-echo demangled)))))
-	     (warn "Mangled symbol changed from \"%s\" to \"%s\" while waiting for background demangler; leaving font-lock properties unchanged" mangled-original mangled-current))))))
-    (_ (error "Malformed transaction queue closure `%s'" closure))))
+  (let ((demangled (substring answer 0 -1))
+	(buffer (marker-buffer start)))
+    (with-current-buffer buffer
+      (let ((mangled-current (buffer-substring-no-properties start end)))
+	(when (and (string= mangled-original mangled-current)
+		   (not (string= mangled-current demangled)))
+	  (with-silent-modifications
+	    (font-lock-prepend-text-property start end 'face demangle-show-as)
+	    (cl-ecase demangle-show-as
+	      ('demangled
+	       (put-text-property start end 'display demangled)
+	       (put-text-property start end 'help-echo mangled-current))
+	      ('mangled
+	       (put-text-property start end 'help-echo demangled)))))))))
 
 (defun demangler-demangle (match-data)
   "Begin demangling a mangled symbol.
@@ -198,11 +193,12 @@ region's display style accordingly."
     (let* ((mangled-with-prefix (match-string 1))
 	   (mangled-without-prefix (match-string 2))
 	   (question (concat mangled-without-prefix "\n")))
-      (pcase match-data
-	(`(,_ ,_ ,(and marker-start (pred markerp)) ,(and marker-end (pred markerp)) ,_ ,_)
-	 (tq-enqueue demangler-queue question "\n"
-		     (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received))
-	(_ (error "Malformed match data `%s'" match-data))))))
+      (cl-destructuring-bind (_ _ marker-start marker-end _ _)
+	  match-data
+	(cl-assert (markerp marker-start))
+	(cl-assert (markerp marker-end))
+	(tq-enqueue demangler-queue question "\n"
+		    (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
