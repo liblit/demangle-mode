@@ -69,6 +69,20 @@
 	 (demangle-mode))
        demangled-file-name))))
 
+(ert-deftest demangle-test-font-lock-after ()
+  "turn on font-lock-mode after demangle-mode, instead of before"
+  (let* ((default-directory demangle-test-dir)
+	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (base-name (file-name-sans-extension raw-file-name))
+	 (demangled-file-name (format "%s.demangled" base-name)))
+    (with-temp-buffer
+      (insert-file-contents raw-file-name)
+      (demangle-test-buffer-vs-file
+       (lambda ()
+	 (demangle-mode)
+	 (font-lock-mode))
+       demangled-file-name))))
+
 ;; Local variables:
 ;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
 ;; End:
