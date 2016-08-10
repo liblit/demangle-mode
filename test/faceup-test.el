@@ -10,7 +10,7 @@
   (while (not (tq-queue-empty demangler-queue))
     (accept-process-output (tq-process demangler-queue) 5)))
 
-(defun demangle-faceup-test-buffer-vs-file (mode faceup-file-name)
+(defun demangle-test-buffer-vs-file (mode faceup-file-name)
   (let ((faceup-properties '(face display help-echo))
 	(faceup-text (with-temp-buffer
 		       (insert-file-contents faceup-file-name)
@@ -25,18 +25,18 @@
     (dolist (show-as '(demangled mangled))
       (let* ((base-name (file-name-sans-extension raw-file-name))
 	     (faceup-file-name (format "%s.%s" base-name show-as))
-	     (test-name-symbol (intern (format "demangle-faceup-test-%s-%s" base-name show-as))))
+	     (test-name-symbol (intern (format "demangle-test-%s-%s" base-name show-as))))
 	(eval `(ert-deftest ,test-name-symbol ()
 		 ,(format "compare “%s” with “%s”, showing %s symbols" raw-file-name faceup-file-name show-as)
 		 (with-temp-buffer
 		   (insert-file-contents ,(expand-file-name raw-file-name))
-		   (demangle-faceup-test-buffer-vs-file
+		   (demangle-test-buffer-vs-file
 		    (lambda ()
 		      (demangle-mode)
 		      (demangle-show-as (quote ,show-as)))
 		    ,(expand-file-name faceup-file-name)))))))))
 
-(ert-deftest defmangle-faceup-test-change-show-as ()
+(ert-deftest demangle-test-change-show-as ()
   "change symbol display style from demangled to mangled and back again"
   (let* ((default-directory demangle-test-dir)
 	 (raw-file-name "faceup/shortest-with-args.raw")
@@ -45,13 +45,13 @@
 	 (mangled-file-name (format "%s.mangled" base-name)))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
-      (demangle-faceup-test-buffer-vs-file
+      (demangle-test-buffer-vs-file
        (lambda ()
 	 (demangle-mode)
 	 (demangle-show-as 'demangled))
        demangled-file-name)
-      (demangle-faceup-test-buffer-vs-file (lambda () (demangle-show-as 'mangled)) mangled-file-name)
-      (demangle-faceup-test-buffer-vs-file (lambda () (demangle-show-as 'demangled)) demangled-file-name))))
+      (demangle-test-buffer-vs-file (lambda () (demangle-show-as 'mangled)) mangled-file-name)
+      (demangle-test-buffer-vs-file (lambda () (demangle-show-as 'demangled)) demangled-file-name))))
 
 ;; Local variables:
 ;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
