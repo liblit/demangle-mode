@@ -10,27 +10,48 @@
   (while (not (tq-queue-empty demangler-queue))
     (accept-process-output (tq-process demangler-queue) 5)))
 
-(let ((default-directory (file-name-directory (or load-file-name buffer-file-name))))
-  (dolist (raw-name (file-expand-wildcards "faceup/*.raw"))
+(defun demangle-faceup-test-buffer-vs-file (mode faceup-file-name)
+  (let ((faceup-properties '(face display help-echo))
+	(faceup-text (with-temp-buffer
+		       (insert-file-contents faceup-file-name)
+		       (buffer-substring-no-properties (point-min) (point-max))))
+	(font-lock-fontify-region-function #'fontify-and-drain-demangler))
+    (should (faceup-test-font-lock-buffer mode faceup-text))))
+
+(defconst demangle-test-dir (file-name-directory (or load-file-name buffer-file-name)))
+
+(let ((default-directory demangle-test-dir))
+  (dolist (raw-file-name (file-expand-wildcards "faceup/*.raw"))
     (dolist (show-as '(demangled mangled))
-      (let* ((base-name (file-name-sans-extension raw-name))
-	     (faceup-name (format "%s.%s" base-name show-as))
-	     (test-name-string (format "demangle-faceup-test-%s-%s" base-name show-as))
-	     (test-name-symbol (intern test-name-string)))
+      (let* ((base-name (file-name-sans-extension raw-file-name))
+	     (faceup-file-name (format "%s.%s" base-name show-as))
+	     (test-name-symbol (intern (format "demangle-faceup-test-%s-%s" base-name show-as))))
 	(eval `(ert-deftest ,test-name-symbol ()
-		 ,(format "compare “%s” with “%s”, showing %s symbols" raw-name faceup-name show-as)
-		 (let ((faceup-properties '(face display help-echo))
-		       (faceup-text (with-temp-buffer
-				      (insert-file-contents ,(expand-file-name faceup-name))
-				      (buffer-substring-no-properties (point-min) (point-max))))
-		       (font-lock-fontify-region-function #'fontify-and-drain-demangler))
-		   (with-temp-buffer
-		     (insert-file-contents ,(expand-file-name raw-name))
-		     (should (faceup-test-font-lock-buffer
-			      (lambda ()
-				(demangle-mode)
-				(demangle-show-as (quote ,show-as)))
-			      faceup-text))))))))))
+		 ,(format "compare “%s” with “%s”, showing %s symbols" raw-file-name faceup-file-name show-as)
+		 (with-temp-buffer
+		   (insert-file-contents ,(expand-file-name raw-file-name))
+		   (demangle-faceup-test-buffer-vs-file
+		    (lambda ()
+		      (demangle-mode)
+		      (demangle-show-as (quote ,show-as)))
+		    ,(expand-file-name faceup-file-name)))))))))
+
+(ert-deftest defmangle-faceup-test-change-show-as ()
+  "change symbol display style from demangled to mangled and back again"
+  (let* ((default-directory demangle-test-dir)
+	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (base-name (file-name-sans-extension raw-file-name))
+	 (demangled-file-name (format "%s.demangled" base-name))
+	 (mangled-file-name (format "%s.mangled" base-name)))
+    (with-temp-buffer
+      (insert-file-contents raw-file-name)
+      (demangle-faceup-test-buffer-vs-file
+       (lambda ()
+	 (demangle-mode)
+	 (demangle-show-as 'demangled))
+       demangled-file-name)
+      (demangle-faceup-test-buffer-vs-file (lambda () (demangle-show-as 'mangled)) mangled-file-name)
+      (demangle-faceup-test-buffer-vs-file (lambda () (demangle-show-as 'demangled)) demangled-file-name))))
 
 ;; Local variables:
 ;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
