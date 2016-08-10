@@ -53,6 +53,21 @@
       (demangle-test-buffer-vs-file (lambda () (demangle-show-as 'mangled)) mangled-file-name)
       (demangle-test-buffer-vs-file (lambda () (demangle-show-as 'demangled)) demangled-file-name))))
 
+(ert-deftest demangle-test-change-show-as-interactively ()
+  "simulate user interaction to change symbol display style to mangled"
+  (let* ((default-directory demangle-test-dir)
+	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (base-name (file-name-sans-extension raw-file-name))
+	 (mangled-file-name (format "%s.mangled" base-name))
+	 (completing-read-function (lambda (&rest ignored) "mangled")))
+    (with-temp-buffer
+      (insert-file-contents raw-file-name)
+      (demangle-test-buffer-vs-file
+       (lambda ()
+	 (demangle-mode)
+	 (call-interactively #'demangle-show-as))
+       mangled-file-name))))
+
 (ert-deftest demangle-test-default-demangled ()
   "default show-as style should be demangled, not mangled"
   (let* ((default-directory demangle-test-dir)
