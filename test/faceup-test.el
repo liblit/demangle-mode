@@ -98,6 +98,30 @@
 	 (demangle-mode -1))
        raw-file-name))))
 
+(ert-deftest demangle-test-demangler-restart ()
+  "stop demangler subprocess, then restart it when needed"
+  (let* ((default-directory demangle-test-dir)
+	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (base-name (file-name-sans-extension raw-file-name))
+	 (demangled-file-name (format "%s.demangled" base-name)))
+    (with-temp-buffer
+      (insert-file-contents raw-file-name)
+      (demangle-test-buffer-vs-file
+       (lambda ()
+	 (font-lock-mode)
+	 (demangle-mode))
+       demangled-file-name)
+      (should demangler-queue)
+      (interrupt-process (tq-process demangler-queue))
+      (accept-process-output (tq-process demangler-queue) 5)
+      (should-not demangler-queue)
+      (demangle-test-buffer-vs-file
+       (lambda ()
+	 (demangle-mode -1))
+       raw-file-name)
+      (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
+      (should demangler-queue))))
+
 ;; Local variables:
 ;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
 ;; End:
