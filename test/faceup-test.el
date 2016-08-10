@@ -32,7 +32,6 @@
 		   (insert-file-contents ,(expand-file-name raw-file-name))
 		   (demangle-test-buffer-vs-file
 		    (lambda ()
-		      (font-lock-mode)
 		      (demangle-mode)
 		      (demangle-show-as (quote ,show-as)))
 		    ,(expand-file-name faceup-file-name)))))))))
@@ -48,7 +47,6 @@
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
        (lambda ()
-	 (font-lock-mode)
 	 (demangle-mode)
 	 (demangle-show-as 'demangled))
        demangled-file-name)
@@ -63,25 +61,7 @@
 	 (demangled-file-name (format "%s.demangled" base-name)))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
-      (demangle-test-buffer-vs-file
-       (lambda ()
-	 (font-lock-mode)
-	 (demangle-mode))
-       demangled-file-name))))
-
-(ert-deftest demangle-test-font-lock-after ()
-  "turn on font-lock-mode after demangle-mode, instead of before"
-  (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
-	 (base-name (file-name-sans-extension raw-file-name))
-	 (demangled-file-name (format "%s.demangled" base-name)))
-    (with-temp-buffer
-      (insert-file-contents raw-file-name)
-      (demangle-test-buffer-vs-file
-       (lambda ()
-	 (demangle-mode)
-	 (font-lock-mode))
-       demangled-file-name))))
+      (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name))))
 
 (ert-deftest demangle-test-turn-mode-off ()
   "remove extra text properties when turning demangle-mode off"
@@ -93,7 +73,6 @@
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
        (lambda ()
-	 (font-lock-mode)
 	 (demangle-mode)
 	 (demangle-mode -1))
        raw-file-name))))
@@ -106,11 +85,7 @@
 	 (demangled-file-name (format "%s.demangled" base-name)))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
-      (demangle-test-buffer-vs-file
-       (lambda ()
-	 (font-lock-mode)
-	 (demangle-mode))
-       demangled-file-name)
+      (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
       (should demangler-queue)
       (interrupt-process (tq-process demangler-queue))
       (accept-process-output (tq-process demangler-queue) 5)

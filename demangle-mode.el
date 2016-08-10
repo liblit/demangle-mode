@@ -92,19 +92,16 @@ to interactively change this in a single buffer."
 		   (default (:underline (:color "grey" :style wave))))
   "Display face for mangled symbols.")
 
-(defun demangle-font-lock-refresh ()
-  "Re-fontify the current buffer if option `font-lock-mode' is active.
+(defalias 'demangle-font-lock-refresh
+  (if (fboundp 'font-lock-flush)
+      #'font-lock-flush	;; Emacs 25 and later
+    #'font-lock-fontify-buffer ;; Emacs 24.x and earlier
+    )
+  "Re-fontify the current buffer.
 
 This is generally done when turning on command `demangle-mode' or
 using command `demangle-show-as' to change the demangled display
-style."
-  (when font-lock-mode
-    (if (fboundp 'font-lock-flush)
-	;; Emacs 25 and later
-	(font-lock-flush)
-      ;; Emacs 24.x and earlier
-      (with-no-warnings
-	(font-lock-fontify-buffer)))))
+style.")
 
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
