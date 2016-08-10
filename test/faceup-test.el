@@ -32,6 +32,7 @@
 		   (insert-file-contents ,(expand-file-name raw-file-name))
 		   (demangle-test-buffer-vs-file
 		    (lambda ()
+		      (font-lock-mode)
 		      (demangle-mode)
 		      (demangle-show-as (quote ,show-as)))
 		    ,(expand-file-name faceup-file-name)))))))))
@@ -47,6 +48,7 @@
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
        (lambda ()
+	 (font-lock-mode)
 	 (demangle-mode)
 	 (demangle-show-as 'demangled))
        demangled-file-name)
