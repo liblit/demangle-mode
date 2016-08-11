@@ -4,7 +4,8 @@
 (require 'demangle-mode)
 
 (defun demangle-test-interactive-bug-report (use-github)
-  (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github)))
+  (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github))
+	     (inhibit-message t))
     (call-interactively #'demangle-mode-submit-bug-report)))
 
 (ert-deftest demangle-test-bug-report-github ()
