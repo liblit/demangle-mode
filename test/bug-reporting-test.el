@@ -1,7 +1,4 @@
-(require 'undercover)
-(undercover)
-
-(require 'demangle-mode)
+(require 'demangle-test-helper "test-helper")
 
 (defun demangle-test-interactive-bug-report (use-github)
   (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github))

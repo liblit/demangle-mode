@@ -1,7 +1,5 @@
-(require 'undercover)
-(undercover)
+(require 'demangle-test-helper "test-helper")
 
-(require 'demangle-mode)
 (require 'ert)
 (require 'faceup)
 
