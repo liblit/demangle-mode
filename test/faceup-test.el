@@ -27,6 +27,7 @@
 	(eval `(ert-deftest ,test-name-symbol ()
 		 ,(format "compare “%s” with “%s”, showing %s symbols" raw-file-name faceup-file-name show-as)
 		 (with-temp-buffer
+		   (make-local-variable 'demangle-show-as)
 		   (insert-file-contents ,(expand-file-name raw-file-name))
 		   (demangle-test-buffer-vs-file
 		    (lambda ()
@@ -42,6 +43,7 @@
 	 (demangled-file-name (format "%s.demangled" base-name))
 	 (mangled-file-name (format "%s.mangled" base-name)))
     (with-temp-buffer
+      (make-local-variable 'demangle-show-as)
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
        (lambda ()
@@ -59,6 +61,7 @@
 	 (mangled-file-name (format "%s.mangled" base-name))
 	 (completing-read-function (lambda (&rest ignored) "mangled")))
     (with-temp-buffer
+      (make-local-variable 'demangle-show-as)
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
        (lambda ()
@@ -74,6 +77,7 @@
 	 (demangled-file-name (format "%s.demangled" base-name)))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
+      (should (eq demangle-show-as 'demangled))
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name))))
 
 (ert-deftest demangle-test-turn-mode-off ()
