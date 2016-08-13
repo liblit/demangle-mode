@@ -103,19 +103,6 @@ This is generally done when turning on command `demangle-mode' or
 using command `demangle-show-as' to change the demangled display
 style.")
 
-(defun demangle-show-as (style)
-  "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
-
-This changes the style for the current buffer only.  Use the
-option `demangle-show-as' to change the default style for all new
-buffers."
-  (interactive
-   (list (intern (let ((completion-ignore-case t))
-		   (completing-read "Show demangled symbols as demangled or mangled: "
-				    '("demangled" "mangled"))))))
-  (set-variable 'demangle-show-as style t)
-  (demangle-font-lock-refresh))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -264,6 +251,20 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 	(font-lock-add-keywords nil demangle-font-lock-keywords))
     (font-lock-remove-keywords nil demangle-font-lock-keywords))
   (demangle-font-lock-refresh))
+
+(defun demangle-show-as (style)
+  "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
+
+This changes the style for the current buffer only.  Use the
+option `demangle-show-as' to change the default style for all new
+buffers."
+  (interactive
+   (list (intern (let ((completion-ignore-case t))
+		   (completing-read "Show demangled symbols as demangled or mangled: "
+				    '("demangled" "mangled"))))))
+  (set-variable 'demangle-show-as style t)
+  (demangle-font-lock-refresh))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
