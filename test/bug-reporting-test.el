@@ -25,7 +25,3 @@
     (should (eq major-mode 'message-mode))
     (set-buffer-modified-p nil)
     (kill-buffer)))
-
-;; Local variables:
-;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
-;; End:

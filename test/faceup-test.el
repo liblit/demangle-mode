@@ -111,7 +111,3 @@
        raw-file-name)
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
       (should demangler-queue))))
-
-;; Local variables:
-;; flycheck-disabled-checkers: 'emacs-lisp-checkdoc
-;; End:
