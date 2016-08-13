@@ -113,8 +113,7 @@ buffers."
    (list (intern (let ((completion-ignore-case t))
 		   (completing-read "Show demangled symbols as demangled or mangled: "
 				    '("demangled" "mangled"))))))
-  (make-local-variable 'demangle-show-as)
-  (set-variable 'demangle-show-as style)
+  (set-variable 'demangle-show-as style t)
   (demangle-font-lock-refresh))
 
 
@@ -233,6 +232,11 @@ either \"_GLOBAL__I_\" or \"_GLOBAL__D_\": these are global
 constructors or destructors (respectively), mangled using a
 Linux/GCC scheme that extends beyond the Itanium ABI.")
 
+(unless (fboundp 'setq-local)
+  ;; Emacs 24.2.x and earlier
+  (defmacro setq-local (var val)
+    `(set (make-local-variable ',var) ,val)))
+
 ;;;###autoload
 (define-minor-mode demangle-mode
   "Toggle demangle mode.
@@ -254,10 +258,9 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
   (if demangle-mode
       (progn
 	(make-local-variable 'demangle-show-as)
-	(make-local-variable 'font-lock-extra-managed-props)
-	(setq font-lock-extra-managed-props
-	      (cl-union font-lock-extra-managed-props
-			'(display help-echo)))
+	(setq-local font-lock-extra-managed-props
+		    (cl-union font-lock-extra-managed-props
+			      '(display help-echo)))
 	(font-lock-add-keywords nil demangle-font-lock-keywords))
     (font-lock-remove-keywords nil demangle-font-lock-keywords))
   (demangle-font-lock-refresh))
