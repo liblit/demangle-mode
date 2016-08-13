@@ -4,7 +4,7 @@
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 1.1
+;; Version: 1.2
 ;; Package-Requires: ((emacs "24") (cl-lib "0.1"))
 ;; Keywords: c tools
 ;; Homepage: https://github.com/liblit/demangle-mode
@@ -67,11 +67,7 @@
 ;;
 
 (defcustom demangle-show-as 'demangled
-  "How to show mangled and demangled symbols.
-
-This sets the default style for newly-created buffers.  Use the
-\"Demangle\" minor-mode menu or the function `demangle-show-as'
-to interactively change this in a single buffer."
+  "How to show mangled and demangled symbols."
   :type '(choice
 	  (const
 	   :tag "Demangled"
@@ -244,7 +240,6 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
   :keymap demangle-mode-map
   (if demangle-mode
       (progn
-	(make-local-variable 'demangle-show-as)
 	(setq-local font-lock-extra-managed-props
 		    (cl-union font-lock-extra-managed-props
 			      '(display help-echo)))
@@ -253,17 +248,17 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
   (demangle-font-lock-refresh))
 
 (defun demangle-show-as (style)
-  "Show demangled symbols in the given STYLE: either 'demangled or 'mangled.
-
-This changes the style for the current buffer only.  Use the
-option `demangle-show-as' to change the default style for all new
-buffers."
+  "Show demangled symbols in the given STYLE: either 'demangled or 'mangled."
   (interactive
    (list (intern (let ((completion-ignore-case t))
 		   (completing-read "Show demangled symbols as demangled or mangled: "
 				    '("demangled" "mangled"))))))
-  (set-variable 'demangle-show-as style t)
-  (demangle-font-lock-refresh))
+  (set-variable 'demangle-show-as style)
+  (save-current-buffer
+    (dolist (buffer (buffer-list))
+      (set-buffer buffer)
+      (when demangle-mode
+	(demangle-font-lock-refresh)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -271,7 +266,7 @@ buffers."
 ;;  bug reporting
 ;;
 
-(defconst demangle-mode-version "1.1"
+(defconst demangle-mode-version "1.2"
   "Package version number for use in bug reports.")
 
 (defconst demangle-mode-maintainer-address "Ben Liblit <liblit@acm.org>"
