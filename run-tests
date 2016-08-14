@@ -1,0 +1,8 @@
+#!/bin/sh -ex
+
+cd "$(dirname "$0")"
+
+rm --force --recursive .cask
+cask clean-elc
+cask install
+cask exec ert-runner
