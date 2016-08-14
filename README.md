@@ -1,4 +1,4 @@
-# Demangle Mode <a href="https://travis-ci.org/liblit/demangle-mode"><img alt="Travis Build Status" align="right" src="https://travis-ci.org/liblit/demangle-mode.svg?branch=master" /></a>
+# Demangle Mode
 
 `demangle-mode` is an Emacs minor mode that automatically demangles
 C++ symbols. For example, in this mode:
@@ -174,3 +174,9 @@ be clean and fast. Unfortunately, I know of no pure Emacs Lisp
 implementation of name demangling and do not wish to create one
 myself. Demanglers as C libraries do exist, but Emacs offers no
 in-process way to call into such a library.
+
+## Project Status at a Glance
+
+Continuous Integration|General Info|Current Versions
+---|---|---
+[![Build Status](https://travis-ci.org/liblit/demangle-mode.svg?branch=master)](https://travis-ci.org/liblit/demangle-mode) [![Coverage Status](https://coveralls.io/repos/github/liblit/demangle-mode/badge.svg?branch=master)](https://coveralls.io/github/liblit/demangle-mode?branch=master)|[![License GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/liblit/demangle-mode/blob/master/LICENSE.md) [![Motivation](https://img.shields.io/badge/itch-scratched-blue.svg)](https://github.com/liblit/demangle-mode/#background-and-motivation)|[![MELPA](http://melpa.org/packages/demangle-mode-badge.svg)](http://melpa.org/#/demangle-mode) [![MELPA Stable](http://stable.melpa.org/packages/demangle-mode-badge.svg)](http://stable.melpa.org/#/demangle-mode)
