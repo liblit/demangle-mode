@@ -256,7 +256,10 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
   (interactive
    (list (intern (let ((completion-ignore-case t))
 		   (completing-read "Show demangled symbols as demangled or mangled: "
-				    '("demangled" "mangled"))))))
+				    '("demangled" "mangled") nil t nil nil
+				    (cl-ecase demangle-show-as
+				      ('demangled "mangled")
+				      ('mangled "demangled")))))))
   (set-variable 'demangle-show-as style)
   (save-current-buffer
     (dolist (buffer (buffer-list))
