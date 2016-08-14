@@ -1,9 +1,11 @@
+;; -*- lexical-binding: t -*-
+
 (require 'demangle-test-helper "test-helper")
 
 (require 'shut-up)
 
 (defun demangle-test-interactive-bug-report (use-github)
-  (cl-letf (((symbol-function #'y-or-n-p) (lambda (prompt) use-github)))
+  (cl-letf (((symbol-function #'y-or-n-p) (lambda (_prompt) use-github)))
     (shut-up
       (call-interactively #'demangle-mode-submit-bug-report))))
 
@@ -11,7 +13,7 @@
   "simulate submitting a bug report using GitHub"
   (let* ((browsed-urls)
 	 (browse-url-browser-function
-	  (lambda (url &rest args)
+	  (lambda (url &rest _args)
 	    (push url browsed-urls))))
     (demangle-test-interactive-bug-report t)
     (should (equal '("https://github.com/liblit/demangle-mode/issues") browsed-urls))))

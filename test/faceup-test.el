@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 (require 'demangle-test-helper "test-helper")
 
 (require 'ert)
@@ -83,9 +85,7 @@
 (ert-deftest demangle-test-turn-mode-off ()
   "remove extra text properties when turning demangle-mode off"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
-	 (base-name (file-name-sans-extension raw-file-name))
-	 (demangled-file-name (format "%s.demangled" base-name)))
+	 (raw-file-name "faceup/shortest-with-args.raw"))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
