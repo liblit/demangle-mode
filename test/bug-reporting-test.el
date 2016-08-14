@@ -1,9 +1,11 @@
 (require 'demangle-test-helper "test-helper")
 
+(require 'shut-up)
+
 (defun demangle-test-interactive-bug-report (use-github)
-  (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github))
-	     (inhibit-message t))
-    (call-interactively #'demangle-mode-submit-bug-report)))
+  (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github)))
+    (shut-up
+      (call-interactively #'demangle-mode-submit-bug-report))))
 
 (ert-deftest demangle-test-bug-report-github ()
   "simulate submitting a bug report using GitHub"

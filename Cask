@@ -6,4 +6,5 @@
 (development
  (depends-on "ert-runner")
  (depends-on "faceup")
+ (depends-on "shut-up")
  (depends-on "undercover"))
