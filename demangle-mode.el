@@ -241,9 +241,11 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
   (if demangle-mode
       (progn
 	(setq-local font-lock-extra-managed-props
-		    (cl-union font-lock-extra-managed-props
-			      '(display help-echo)))
+		    `(display help-echo . ,font-lock-extra-managed-props))
 	(font-lock-add-keywords nil demangle-font-lock-keywords))
+    (dolist (property '(display help-echo))
+      (setq-local font-lock-extra-managed-props
+		  (cl-delete property font-lock-extra-managed-props :count 1)))
     (font-lock-remove-keywords nil demangle-font-lock-keywords))
   (demangle-font-lock-refresh))
 
