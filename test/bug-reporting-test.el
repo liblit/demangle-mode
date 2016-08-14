@@ -3,7 +3,7 @@
 (require 'shut-up)
 
 (defun demangle-test-interactive-bug-report (use-github)
-  (cl-letf* (((symbol-function #'y-or-n-p) (lambda (prompt) use-github)))
+  (cl-letf (((symbol-function #'y-or-n-p) (lambda (prompt) use-github)))
     (shut-up
       (call-interactively #'demangle-mode-submit-bug-report))))
 
@@ -19,7 +19,7 @@
 (ert-deftest demangle-test-bug-report-reporter ()
   "simulate submitting a bug report using reporter"
   (save-window-excursion
-    (cl-letf* (((symbol-function #'read-string) (lambda (&rest ignored) "canary")))
+    (cl-letf (((symbol-function #'read-string) (lambda (&rest ignored) "canary")))
       (demangle-test-interactive-bug-report nil))
     (should (eq major-mode 'message-mode))
     (set-buffer-modified-p nil)
