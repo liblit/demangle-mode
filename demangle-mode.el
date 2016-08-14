@@ -243,10 +243,13 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 	(setq-local font-lock-extra-managed-props
 		    `(display help-echo . ,font-lock-extra-managed-props))
 	(font-lock-add-keywords nil demangle-font-lock-keywords))
+    (font-lock-remove-keywords nil demangle-font-lock-keywords)
+    (unless (fboundp 'font-lock-flush)
+      ;; Emacs 24.x and earlier
+      (font-lock-unfontify-buffer))
     (dolist (property '(display help-echo))
       (setq-local font-lock-extra-managed-props
-		  (cl-delete property font-lock-extra-managed-props :count 1)))
-    (font-lock-remove-keywords nil demangle-font-lock-keywords))
+		  (cl-delete property font-lock-extra-managed-props :count 1))))
   (demangle-font-lock-refresh))
 
 (defun demangle-show-as (style)
