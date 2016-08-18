@@ -11,8 +11,7 @@ env:
   - EVM_EMACS=emacs-git-snapshot-travis
 
 before_install:
-  - curl --fail --silent --show-error --insecure --location --output travis.sh https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw
-  - source ./travis.sh
+  - source <(curl --fail --silent --show-error --insecure --location https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw)
   - evm install "$EVM_EMACS" --use --skip
 
 install:
