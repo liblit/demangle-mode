@@ -287,7 +287,7 @@ tracker.  This is the preferred reporting channel.  Otherwise,
 initiates (but does not send) e-mail to the package maintainer.
 Interactively, prompts for the method to use."
   (interactive
-   (list (y-or-n-p "Can you use a GitHub account for issue reporting? ")))
+   `(,(y-or-n-p "Can you use a GitHub account for issue reporting? ")))
   (if use-github
       (browse-url "https://github.com/liblit/demangle-mode/issues")
     (eval-when-compile (require 'reporter))
