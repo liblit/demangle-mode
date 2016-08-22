@@ -180,7 +180,7 @@ region's display style accordingly."
 	(cl-assert (markerp marker-start))
 	(cl-assert (markerp marker-end))
 	(tq-enqueue demangler-queue question "\n"
-		    (list mangled-with-prefix marker-start marker-end) #'demangler-answer-received)))))
+		    `(,mangled-with-prefix ,marker-start ,marker-end) #'demangler-answer-received)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,12 +254,12 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled."
   (interactive
-   (list (intern (let ((completion-ignore-case t))
-		   (completing-read "Show demangled symbols as demangled or mangled: "
-				    '("demangled" "mangled") nil t nil nil
-				    (cl-ecase demangle-show-as
-				      ('demangled "mangled")
-				      ('mangled "demangled")))))))
+   `(,(intern (let ((completion-ignore-case t))
+		(completing-read "Show demangled symbols as demangled or mangled: "
+				 '("demangled" "mangled") nil t nil nil
+				 (cl-ecase demangle-show-as
+				   ('demangled "mangled")
+				   ('mangled "demangled")))))))
   (set-variable 'demangle-show-as style)
   (save-current-buffer
     (dolist (buffer (buffer-list))
@@ -295,11 +295,11 @@ Interactively, prompts for the method to use."
       (reporter-submit-bug-report
        demangle-mode-maintainer-address
        (concat "demangle-mode.el " demangle-mode-version)
-       (list 'demangle-mode
-	     'demangle-show-as
-	     'demangler-queue
-	     'font-lock-mode
-	     'font-lock-keywords)))))
+       '(demangle-mode
+	 demangle-show-as
+	 demangler-queue
+	 font-lock-mode
+	 font-lock-keywords)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
