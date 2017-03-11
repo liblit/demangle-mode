@@ -273,7 +273,7 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 ;;  bug reporting
 ;;
 
-(defconst demangle-mode-version "1.2"
+(defconst demangle-mode-version "1.2.1"
   "Package version number for use in bug reports.")
 
 (defconst demangle-mode-maintainer-address "Ben Liblit <liblit@acm.org>"
