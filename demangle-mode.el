@@ -1,10 +1,10 @@
 ;;; demangle-mode.el --- Automatically demangle C++ symbols -*- lexical-binding: t -*-
 
-;; Copyright (C) 2014 Ben Liblit
+;; Copyright (C) 2014-2017 Ben Liblit
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 1.2
+;; Version: 1.2.1
 ;; Package-Requires: ((cl-lib "0.1") (emacs "24"))
 ;; Keywords: c tools
 ;; Homepage: https://github.com/liblit/demangle-mode
