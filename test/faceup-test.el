@@ -16,7 +16,7 @@
 		       (insert-file-contents faceup-file-name)
 		       (buffer-substring-no-properties (point-min) (point-max))))
 	(font-lock-fontify-region-function #'fontify-and-drain-demangler))
-    (should (faceup-test-font-lock-buffer mode faceup-text))))
+    (should (faceup-test-font-lock-buffer `(,mode) faceup-text))))
 
 (defconst demangle-test-dir (file-name-directory (or load-file-name buffer-file-name)))
 
