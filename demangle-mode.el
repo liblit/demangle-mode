@@ -322,7 +322,7 @@ Interactively, prompts for the method to use."
     ["Turn Off minor mode" (demangle-mode 0)]
     ["Help for minor mode" (describe-function 'demangle-mode)]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  epilogue
 ;;
