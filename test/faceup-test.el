@@ -7,8 +7,8 @@
 
 (defun fontify-and-drain-demangler (beg end &optional verbose)
   (font-lock-default-fontify-region beg end verbose)
-  (while (not (tq-queue-empty demangler-queue))
-    (accept-process-output (tq-process demangler-queue) 5)))
+  (while (not (tq-queue-empty demangle--queue))
+    (accept-process-output (tq-process demangle--queue) 5)))
 
 (defun demangle-test-buffer-vs-file (mode faceup-file-name)
   (let ((faceup-properties '(face display help-echo))
@@ -103,13 +103,13 @@
     (with-temp-buffer
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
-      (should demangler-queue)
-      (interrupt-process (tq-process demangler-queue))
-      (accept-process-output (tq-process demangler-queue) 5)
-      (should-not demangler-queue)
+      (should demangle--queue)
+      (interrupt-process (tq-process demangle--queue))
+      (accept-process-output (tq-process demangle--queue) 5)
+      (should-not demangle--queue)
       (demangle-test-buffer-vs-file
        (lambda ()
 	 (demangle-mode -1))
        raw-file-name)
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
-      (should demangler-queue))))
+      (should demangle--queue))))
