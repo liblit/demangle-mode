@@ -7,7 +7,7 @@
 ;; Version: 1.2.1
 ;; Package-Requires: ((cl-lib "0.1") (emacs "24"))
 ;; Keywords: c tools
-;; Homepage: https://github.com/liblit/demangle-mode
+;; URL: https://github.com/liblit/demangle-mode
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@
 (eval-when-compile
   (require 'rx))
 
-(defgroup demangle-mode nil
+(defgroup demangle nil
   "Automatically demangle C++ symbols found in buffers."
   :group 'tools)
 
