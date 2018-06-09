@@ -21,4 +21,4 @@ install:
   - cask install
 
 script:
-  - cask exec ert-runner
+  - cask --verbose exec ert-runner
