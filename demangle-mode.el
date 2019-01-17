@@ -200,8 +200,10 @@ changing the display style of demangled symbols (see option
 			line-start)
 		    (group (sequence (optional ?_)
 				     (group (or "_Z"
-						(sequence "_GLOBAL__"
-							  (any ?D ?I)))
+						(sequence "_GLOBAL_"
+							  (any ?. ?_ ?$)
+							  (any ?D ?I)
+							  ?_))
 					    (one-or-more (any ?_ alnum)))))))
      1
      (ignore (demangle--demangle-matched-symbol (match-data)))))
@@ -211,9 +213,9 @@ The standard patterns recognize two common families of mangled
 symbols.  The first consists of identifiers starting with \"_Z\":
 these have been mangled using the popular Itanium ABI mangling
 scheme.  The second family consists of identifiers starting with
-either \"_GLOBAL__I_\" or \"_GLOBAL__D_\": these are global
-constructors or destructors (respectively), mangled using a
-Linux/GCC scheme that extends beyond the Itanium ABI.")
+\"_GLOBAL_[._$][DI]_\": these are global constructors or
+destructors (respectively), mangled using a Linux/GCC scheme that
+extends beyond the Itanium ABI.")
 
 (defmacro demangle--setq-local (var val)
   "Set variable VAR to value VAL in current buffer."
