@@ -60,6 +60,21 @@
   "Automatically demangle C++ symbols found in buffers."
   :group 'tools)
 
+(defcustom demangle-c++filt-executable "c++filt"
+  "The executable to use to decipher mangled symbols."
+  :group 'demangle
+  :risky t
+  :type 'file)
+
+(defcustom demangle-c++filt-args '("--no-strip-underscore")
+  "Extra arguments for the c++filt executable."
+  :group 'demangle
+  :risky t
+  :type '(repeat string))
+
+(defun demangle--c++filt-command ()
+  "Generate the c++filt command."
+  `(,demangle-c++filt-executable ,@demangle-c++filt-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -128,13 +143,14 @@ transaction queue restarts automatically when needed."
 	   (if (fboundp 'make-process)
 	       ;; Emacs 25 and later
 	       (make-process :name "demangler"
-			     :command '("c++filt" "--no-strip-underscore")
+			     :command (demangle--c++filt-command)
 			     :noquery t
 			     :connection-type 'pipe
 			     :sentinel #'demangle--sentinel)
 	     ;; Emacs 24.x and earlier
 	     (let* ((process-connection-type nil)
-		    (subprocess (start-process "demangler" nil "c++filt" "--no-strip-underscore")))
+		    (subprocess (apply #'start-process "demangler" nil
+                                       (demangle--c++filt-command))))
 	       (set-process-query-on-exit-flag subprocess nil)
 	       (set-process-sentinel subprocess #'demangle--sentinel)
 	       subprocess))))

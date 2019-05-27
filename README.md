@@ -83,6 +83,11 @@ underline; text-decoration-color: gray; text-decoration-style:
 wavy">wavy gray underline</span>, depending on the output terminal’s
 capabilities.
 
+Finally, you can change the executable used to run the c++filt
+command, either specifying a different command name,
+e.g. `llvm-cxxfilt` or the absolute path to the executable.  You can
+also add or remove the command line options passed to c++filt.
+
 ## Background and Motivation
 
 [Name mangling](https://en.wikipedia.org/wiki/Name_mangling) is “a way
