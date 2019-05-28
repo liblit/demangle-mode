@@ -220,7 +220,7 @@ changing the display style of demangled symbols (see option
 							  (any ?. ?_ ?$)
 							  (any ?D ?I)
 							  ?_))
-					    (one-or-more (any ?_ alnum)))))))
+					    (one-or-more (any ?_ ?$ alnum)))))))
      1
      (ignore (demangle--demangle-matched-symbol (match-data)))))
   "Font-lock patterns matching mangled C++ symbols.
