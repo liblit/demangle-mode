@@ -19,8 +19,9 @@ Install `demangle-mode` from the fantastic
 [<abbr title="Milkypostman’s Emacs Lisp Package Archive">MELPA</abbr>](https://melpa.org/#/getting-started)
 repository:
 [![MELPA](http://melpa.org/packages/demangle-mode-badge.svg)](http://melpa.org/#/demangle-mode),
-[![MELPA Stable](http://stable.melpa.org/packages/demangle-mode-badge.svg)](http://stable.melpa.org/#/demangle-mode). Or
-[save `demangle-mode.el`](https://raw2.github.com/liblit/demangle-mode/master/demangle-mode.el)
+[![MELPA Stable](http://stable.melpa.org/packages/demangle-mode-badge.svg)](http://stable.melpa.org/#/demangle-mode).
+Or [save
+`demangle-mode.el`](https://raw2.github.com/liblit/demangle-mode/master/demangle-mode.el)
 somewhere in your Emacs
 [`load-path`](http://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html),
 then use `M-x load-library RET demangle-mode RET` to load the package.
