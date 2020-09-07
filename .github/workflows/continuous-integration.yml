@@ -1,0 +1,34 @@
+name: Continuous integration
+on:
+  - pull_request
+  - push
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        emacs_version:
+          - 24.3
+          - 24.4
+          - 24.5
+          - 25.1
+          - 25.2
+          - 25.3
+          - 26.1
+          - 26.2
+          - 26.3
+          - 27.1
+          - snapshot
+      fail-fast: false
+    steps:
+      - name: Set up Emacs ${{ matrix.emacs_version }}
+        uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+      - name: Check out sources
+        uses: actions/checkout@v2
+      - name: Set up Cask
+        uses: conao3/setup-cask@master
+      - name: Build and test
+        run: ./run-tests
