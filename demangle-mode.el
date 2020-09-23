@@ -198,7 +198,7 @@ the background, though `demangle--queue'.  Once demangling is
 complete, `demangle--answer-received' updates this matched
 region's display style accordingly."
   (save-match-data
-    (let* ((command (caddr language))
+    (let* ((command (cl-caddr language))
 	   (queue (demangle--start command)))
       (set-match-data match-data)
       (let* ((mangled-with-prefix (match-string 1))
