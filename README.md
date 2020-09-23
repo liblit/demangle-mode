@@ -1,15 +1,23 @@
 # Demangle Mode
 
 `demangle-mode` is an Emacs minor mode that automatically demangles
-C++ symbols. For example, in this mode:
+C++ and D symbols. For example, in this mode:
 
-- `_ZNSaIcED2Ev` displays as <span title="_ZNSaIcED2Ev" style="border:
-  1px solid gray">`std::allocator<char>::~allocator()`</span>
-- `_ZTISt10ostrstream` displays as <span title="_ZTISt10ostrstream"
-  style="border: 1px solid gray">`typeinfo for std::ostrstream`</span>
-- `_GLOBAL__I_abc` displays as <span title="_GLOBAL__I_abc"
-  style="border: 1px solid gray">`global constructors keyed to
-  abc`</span>
+- the mangled C++ symbol `_ZNSaIcED2Ev` displays as <span
+  title="_ZNSaIcED2Ev" style="border:  1px solid
+  gray">`std::allocator<char>::~allocator()`</span>
+
+- the mangled C++ symbol `_ZTISt10ostrstream` displays as <span
+  title="_ZTISt10ostrstream" style="border: 1px solid gray">`typeinfo
+  for std::ostrstream`</span>
+
+- the mangled C++ symbol `_GLOBAL__I_abc` displays as <span
+  title="_GLOBAL__I_abc" style="border: 1px solid gray">`global
+  constructors keyed to abc`</span>
+
+- the mangled D symbol `_D4test3fooAa` displays as <span
+  title="_GLOBAL__I_abc" style="border: 1px solid
+  gray">`test.foo`</span>
 
 ## How to Use
 
@@ -100,14 +108,15 @@ function named `print` taking a single `int` parameter might mangle to
 mangle to `_Z5printcc`. This lets linkers and other tools distinguish
 the two functions.
 
-Most programmer-facing C++ tools demangle symbols back to their
+Most programmer-facing C++ and D tools demangle symbols back to their
 human-readable forms when producing output. Sometimes, though, we must
 work with “raw” text containing mangled, hard-to-read symbols. For
 example, [LLVM assembly source](http://llvm.org/docs/LangRef.html)
 from the [Clang C++ compiler](http://clang.llvm.org/) contains many
 raw, mangled symbols. It can be useful to demangle these in-place to
 make such files easier to read and understand. `demangle-mode`
-[scratches that itch](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s02.html).
+[scratches that
+itch](http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/ar01s02.html).
 
 ## Compatibility Notes
 
