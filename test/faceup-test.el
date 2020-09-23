@@ -7,8 +7,10 @@
 
 (defun fontify-and-drain-demangler (beg end &optional verbose)
   (font-lock-default-fontify-region beg end verbose)
-  (while (not (tq-queue-empty demangle--queue))
-    (accept-process-output (tq-process demangle--queue) 5)))
+  (maphash (lambda (_command queue)
+	     (while (not (tq-queue-empty queue))
+	       (accept-process-output (tq-process queue) 5)))
+	   demangle--queues))
 
 (defun demangle-test-buffer-vs-file (mode faceup-file-name)
   (let ((faceup-properties '(face display help-echo))
@@ -40,7 +42,7 @@
 (ert-deftest demangle-test-change-show-as ()
   "change symbol display style from demangled to mangled and back again"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (raw-file-name "faceup/c++-shortest-with-args.raw")
 	 (base-name (file-name-sans-extension raw-file-name))
 	 (demangled-file-name (format "%s.demangled" base-name))
 	 (mangled-file-name (format "%s.mangled" base-name)))
@@ -58,7 +60,7 @@
 (ert-deftest demangle-test-change-show-as-interactively ()
   "simulate user interaction to change symbol display style to mangled"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (raw-file-name "faceup/c++-shortest-with-args.raw")
 	 (base-name (file-name-sans-extension raw-file-name))
 	 (mangled-file-name (format "%s.mangled" base-name))
 	 (completing-read-function (lambda (&rest ignored) "mangled")))
@@ -74,7 +76,7 @@
 (ert-deftest demangle-test-default-demangled ()
   "default show-as style should be demangled, not mangled"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (raw-file-name "faceup/c++-shortest-with-args.raw")
 	 (base-name (file-name-sans-extension raw-file-name))
 	 (demangled-file-name (format "%s.demangled" base-name)))
     (with-temp-buffer
@@ -85,7 +87,7 @@
 (ert-deftest demangle-test-turn-mode-off ()
   "remove extra text properties when turning demangle-mode off"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw"))
+	 (raw-file-name "faceup/c++-shortest-with-args.raw"))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file
@@ -97,19 +99,21 @@
 (ert-deftest demangle-test-demangler-restart ()
   "stop demangler subprocess, then restart it when needed"
   (let* ((default-directory demangle-test-dir)
-	 (raw-file-name "faceup/shortest-with-args.raw")
+	 (raw-file-name "faceup/c++-shortest-with-args.raw")
 	 (base-name (file-name-sans-extension raw-file-name))
 	 (demangled-file-name (format "%s.demangled" base-name)))
     (with-temp-buffer
       (insert-file-contents raw-file-name)
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
-      (should demangle--queue)
-      (interrupt-process (tq-process demangle--queue))
-      (accept-process-output (tq-process demangle--queue) 5)
-      (should-not demangle--queue)
+      (should (= 1 (hash-table-count demangle--queues)))
+      (maphash (lambda (_command queue)
+		 (interrupt-process (tq-process queue))
+		 (accept-process-output (tq-process queue) 5))
+	       demangle--queues)
+      (should (zerop (hash-table-count demangle--queues)))
       (demangle-test-buffer-vs-file
        (lambda ()
 	 (demangle-mode -1))
        raw-file-name)
       (demangle-test-buffer-vs-file #'demangle-mode demangled-file-name)
-      (should demangle--queue))))
+      (should (= 1 (hash-table-count demangle--queues))))))

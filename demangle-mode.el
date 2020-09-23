@@ -53,28 +53,34 @@
 (require 'easymenu)
 (require 'tq)
 
-(eval-when-compile
-  (require 'rx))
-
 (defgroup demangle nil
   "Automatically demangle C++ symbols found in buffers."
   :group 'tools)
 
-(defcustom demangle-c++filt-executable "c++filt"
-  "The executable to use to decipher mangled symbols."
+(defcustom demangle-languages
+  '(("C++"
+     "\\(?:_Z\\|\\(?:_GLOBAL_[._$][DI]_\\)\\)[_$[:alnum:]]+"
+     ("c++filt" "--no-strip-underscore"))
+    ("D"
+     "_D[_[:alnum:]]+"
+     ("c++filt" "--no-strip-underscore" "--format=dlang")))
+  "Languages that use mangled symbols, which `demangle-mode' can demangle."
   :group 'demangle
   :risky t
-  :type 'file)
+  :type '(repeat
+	  (list :tag "Mangled Symbol Language"
+		(string :tag "Name")
+		(regexp :tag "Pattern")
+		(cons :tag "Filter Command and Arguments"
+		      (string :tag "Filter Command"
+			      :validate (lambda (widget)
+					  (let ((value (widget-value widget)))
+					    (unless (executable-find value)
+					      (widget-put widget
+							  :error (format-message "Cannot find executable named `%s'." value))
+					      widget))))
+		      (repeat (string :tag "Filter Argument"))))))
 
-(defcustom demangle-c++filt-args '("--no-strip-underscore")
-  "Extra arguments for the c++filt executable."
-  :group 'demangle
-  :risky t
-  :type '(repeat string))
-
-(defun demangle--c++filt-command ()
-  "Generate the c++filt command."
-  `(,demangle-c++filt-executable ,@demangle-c++filt-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -120,41 +126,47 @@ style.")
 ;;  management of the demangler subprocess and transaction queue
 ;;
 
-(defvar demangle--queue nil
-  "Transaction queue for background demangling of C++ symbols.")
+(defvar demangle--queues (make-hash-table
+			  :test 'equal
+			  :size (length demangle-languages))
+  "Transaction queues for background demangling of C++ symbols.
 
-(defun demangle--stop ()
-  "Stop the demangler subprocess and transaction queue.
+Queues are values in this hash table, keyed by the complete
+demangling filter command with arguments.")
+
+(defun demangle--stop (command)
+  "Stop the demangler subprocess and transaction queue for the given COMMAND.
 
 This is safe to call at any time; the demangler subprocess and
 transaction queue restarts automatically when needed."
-  (when demangle--queue
-    (tq-close demangle--queue)
-    (setq demangle--queue nil)))
+  (let ((queue (gethash command demangle--queues)))
+    (when queue
+      (tq-close queue)
+      (remhash command demangle--queues))))
 
-(defun demangle--sentinel (_process _message)
-  "Stop the demangler queue if the demangler subprocess exits."
-  (demangle--stop))
-
-(defun demangle--start ()
-  "Start the demangler subprocess and transaction queue."
-  (unless demangle--queue
-    (let ((subprocess
-	   (if (fboundp 'make-process)
-	       ;; Emacs 25 and later
-	       (make-process :name "demangler"
-			     :command (demangle--c++filt-command)
-			     :noquery t
-			     :connection-type 'pipe
-			     :sentinel #'demangle--sentinel)
-	     ;; Emacs 24.x and earlier
-	     (let* ((process-connection-type nil)
-		    (subprocess (apply #'start-process "demangler" nil
-                                       (demangle--c++filt-command))))
-	       (set-process-query-on-exit-flag subprocess nil)
-	       (set-process-sentinel subprocess #'demangle--sentinel)
-	       subprocess))))
-      (setq demangle--queue (tq-create subprocess)))))
+(defun demangle--start (command)
+  "Start the demangler subprocess and transaction queue for the given COMMAND."
+  (let* ((queue (gethash command demangle--queues))
+	 (sentinel (lambda (_process _message)
+		     (demangle--stop command))))
+    (or queue
+	(let ((subprocess
+	       (if (fboundp 'make-process)
+		   ;; Emacs 25 and later
+		   (make-process :name "demangler"
+				 :command command
+				 :noquery t
+				 :connection-type 'pipe
+				 :sentinel sentinel)
+		 ;; Emacs 24.x and earlier
+		 (let* ((process-connection-type nil)
+			(subprocess (apply #'start-process "demangler" nil command)))
+		   (set-process-query-on-exit-flag subprocess nil)
+		   (set-process-sentinel subprocess sentinel)
+		   subprocess))))
+	  (let ((queue (tq-create subprocess)))
+	    (puthash command queue demangle--queues)
+	    queue)))))
 
 (cl-defun demangle--answer-received ((mangled-original start end) answer)
   "Process a response received from the demangler transaction queue.
@@ -177,8 +189,8 @@ the `demangle--queue'."
 	      ('mangled
 	       (put-text-property start end 'help-echo demangled)))))))))
 
-(defun demangle--demangle-matched-symbol (match-data)
-  "Begin demangling a mangled symbol.
+(defun demangle--demangle-matched-symbol (language match-data)
+  "Begin demangling a mangled symbol from the given LANGUAGE.
 
 MATCH-DATA from a recent regular expression search determines the
 location and text of the mangled symbol.  Demangling proceeds in
@@ -186,17 +198,18 @@ the background, though `demangle--queue'.  Once demangling is
 complete, `demangle--answer-received' updates this matched
 region's display style accordingly."
   (save-match-data
-    (demangle--start)
-    (set-match-data match-data)
-    (let* ((mangled-with-prefix (match-string 1))
-	   (mangled-without-prefix (match-string 2))
-	   (question (concat mangled-without-prefix "\n")))
-      (cl-destructuring-bind (_ _ marker-start marker-end _ _)
-	  match-data
-	(cl-assert (markerp marker-start))
-	(cl-assert (markerp marker-end))
-	(tq-enqueue demangle--queue question "\n"
-		    `(,mangled-with-prefix ,marker-start ,marker-end) #'demangle--answer-received)))))
+    (let* ((command (caddr language))
+	   (queue (demangle--start command)))
+      (set-match-data match-data)
+      (let* ((mangled-with-prefix (match-string 1))
+	     (mangled-without-prefix (match-string 2))
+	     (question (concat mangled-without-prefix "\n")))
+	(cl-destructuring-bind (_ _ marker-start marker-end _ _)
+	    match-data
+	  (cl-assert (markerp marker-start))
+	  (cl-assert (markerp marker-end))
+	  (tq-enqueue queue question "\n"
+		      `(,mangled-with-prefix ,marker-start ,marker-end) #'demangle--answer-received))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -211,27 +224,15 @@ This provides a small mode-specific menu with options for
 changing the display style of demangled symbols (see option
 `demangle-show-as').")
 
-(defconst demangle-font-lock-keywords
-  `((,(rx (sequence (or (not (any ?_ alnum))
-			line-start)
-		    (group (sequence (optional ?_)
-				     (group (or "_Z"
-						(sequence "_GLOBAL_"
-							  (any ?. ?_ ?$)
-							  (any ?D ?I)
-							  ?_))
-					    (one-or-more (any ?_ ?$ alnum)))))))
-     1
-     (ignore (demangle--demangle-matched-symbol (match-data)))))
-  "Font-lock patterns matching mangled C++ symbols.
-
-The standard patterns recognize two common families of mangled
-symbols.  The first consists of identifiers starting with \"_Z\":
-these have been mangled using the popular Itanium ABI mangling
-scheme.  The second family consists of identifiers starting with
-\"_GLOBAL_[._$][DI]_\": these are global constructors or
-destructors (respectively), mangled using a Linux/GCC scheme that
-extends beyond the Itanium ABI.")
+(defun demangle-font-lock-keywords ()
+  "Compute font-lock patterns for languages listed in `demangle-languages'."
+  (mapcar (lambda (language)
+	    `(,(format "\\(?:^\\|[^_[:alnum:]]\\)\\(_?\\(%s\\)\\)" (cadr language))
+	      1
+	      (ignore (demangle--demangle-matched-symbol
+		       ',language
+		       (match-data)))))
+	  demangle-languages))
 
 (defmacro demangle--setq-local (var val)
   "Set variable VAR to value VAL in current buffer."
@@ -258,18 +259,19 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 `demangle-mode'."
   :lighter " Demangle"
   :keymap demangle-mode-map
-  (if demangle-mode
-      (progn
+  (let ((demangle-font-lock-keywords (demangle-font-lock-keywords)))
+    (if demangle-mode
+	(progn
+	  (demangle--setq-local font-lock-extra-managed-props
+				`(display help-echo . ,font-lock-extra-managed-props))
+	  (font-lock-add-keywords nil demangle-font-lock-keywords)
+	  (demangle-font-lock-refresh))
+      (font-lock-remove-keywords nil demangle-font-lock-keywords)
+      (font-lock-unfontify-buffer)
+      (dolist (property '(display help-echo))
 	(demangle--setq-local font-lock-extra-managed-props
-			      `(display help-echo . ,font-lock-extra-managed-props))
-	(font-lock-add-keywords nil demangle-font-lock-keywords)
-	(demangle-font-lock-refresh))
-    (font-lock-remove-keywords nil demangle-font-lock-keywords)
-    (font-lock-unfontify-buffer)
-    (dolist (property '(display help-echo))
-      (demangle--setq-local font-lock-extra-managed-props
-			    (cl-delete property font-lock-extra-managed-props :count 1)))
-    (font-lock-mode (or font-lock-mode -1))))
+			      (cl-delete property font-lock-extra-managed-props :count 1)))
+    (font-lock-mode (or font-lock-mode -1)))))
 
 (defun demangle-show-as (style)
   "Show demangled symbols in the given STYLE: either 'demangled or 'mangled."
