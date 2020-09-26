@@ -36,8 +36,8 @@
 ;; - the mangled C++ symbol `_ZTISt10ostrstream' displays as `typeinfo
 ;;   for std::ostrstream'
 ;;
-;; - the mangled C++ `_GLOBAL__I_abc' displays as `global constructors
-;;   keyed to abc'
+;; - the mangled C++ symbol `_GLOBAL__I_abc' displays as `global
+;;   constructors keyed to abc'
 ;;
 ;; - the mangled D symbol `_D4test3fooAa' displays as `test.foo'
 
@@ -51,6 +51,7 @@
 
 ;;; Code:
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  prologue: dependencies and option grouping
@@ -63,6 +64,12 @@
 (defgroup demangle nil
   "Automatically demangle C++ symbols found in buffers."
   :group 'tools)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  configurable languages and demangler commands
+;;
 
 (defcustom demangle-languages
   '(("C++"
@@ -130,7 +137,7 @@ style.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  management of the demangler subprocess and transaction queue
+;;  management of demangler subprocesses and transaction queues
 ;;
 
 (defvar demangle--queues (make-hash-table
@@ -330,6 +337,7 @@ Interactively, prompts for the method to use."
 	 font-lock-mode
 	 font-lock-keywords)))))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; mode-specific menu
@@ -350,6 +358,7 @@ Interactively, prompts for the method to use."
     ;; standard menu items copied from `minor-mode-menu-from-indicator'
     ["Turn Off minor mode" (demangle-mode 0)]
     ["Help for minor mode" (describe-function 'demangle-mode)]))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
