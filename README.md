@@ -51,7 +51,11 @@ If you always want demangling on in certain major modes, add
 `demangle-mode` to the appropriate major-mode hook, such as:
 
 ```elisp
+;; demangle symbols in LLVM bitcode
 (add-hook 'llvm-mode-hook #'demangle-mode)
+
+;; demangle symbols in linker error messages
+(add-hook 'compilation-minor-mode-hook 'demangle-mode)
 ```
 
 [File](https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html)
