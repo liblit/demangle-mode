@@ -1,15 +1,11 @@
 # Demangle Mode
 
 `demangle-mode` is an Emacs minor mode that automatically demangles
-C++ and D symbols. For example, in this mode:
+C++, D, and Rust symbols. For example, in this mode:
 
 - the mangled C++ symbol `_ZNSaIcED2Ev` displays as <span
   title="_ZNSaIcED2Ev" style="border:  1px solid
   gray">`std::allocator<char>::~allocator()`</span>
-
-- the mangled C++ symbol `_ZTISt10ostrstream` displays as <span
-  title="_ZTISt10ostrstream" style="border: 1px solid gray">`typeinfo
-  for std::ostrstream`</span>
 
 - the mangled C++ symbol `_GLOBAL__I_abc` displays as <span
   title="_GLOBAL__I_abc" style="border: 1px solid gray">`global
@@ -18,6 +14,10 @@ C++ and D symbols. For example, in this mode:
 - the mangled D symbol `_D4test3fooAa` displays as <span
   title="_GLOBAL__I_abc" style="border: 1px solid
   gray">`test.foo`</span>
+
+- the mangled Rust symbol `_RNvNtNtCs1234_7mycrate3foo3bar3baz`
+  displays as <span title="_RNvNtNtCs1234_7mycrate3foo3bar3baz"
+  style="border: 1px solid gray">`mycrate::foo::bar::baz`</span>
 
 ## How to Use
 
@@ -74,10 +74,10 @@ as `.dir-locals.el` in that same directory:
 
 ### Customization
 
-Explore the `demangle-mode` customization group for configurable
-options that affect this mode’s behavior: `M-x customize-group RET
-demangle-mode RET`. You can choose between two styles of showing
-mangled/demangled symbols:
+Explore the `demangle` customization group for configurable options
+that affect this mode’s behavior: `M-x customize-group RET demangle
+RET`. You can choose between two styles of showing mangled/demangled
+symbols:
 
 - show the demangled symbol (read-only) on screen, with the original
   mangled symbol available as a help message or tooltip; or
@@ -96,10 +96,9 @@ underline; text-decoration-color: gray; text-decoration-style:
 wavy">wavy gray underline</span>, depending on the output terminal’s
 capabilities.
 
-Finally, you can change the executable used to run the c++filt
-command, either specifying a different command name,
-e.g. `llvm-cxxfilt` or the absolute path to the executable.  You can
-also add or remove the command line options passed to c++filt.
+Finally, you can change the set of languages that used mangled
+symbols. For example, you can add new mangled symbol patterns or
+change the external commands used to demangle them.
 
 ## Background and Motivation
 
@@ -112,7 +111,7 @@ function named `print` taking a single `int` parameter might mangle to
 mangle to `_Z5printcc`. This lets linkers and other tools distinguish
 the two functions.
 
-Most programmer-facing C++ and D tools demangle symbols back to their
+Most programmer-facing tools demangle symbols back to their
 human-readable forms when producing output. Sometimes, though, we must
 work with “raw” text containing mangled, hard-to-read symbols. For
 example, [LLVM assembly source](http://llvm.org/docs/LangRef.html)
@@ -144,17 +143,23 @@ packages or user actions that set these properties.
 plus a few Linux/GCC extensions. Adding other mangled forms would be
 easy, if needed.
 
-Mangled symbols may optionally begin with an extra leading underscore,
-as some platforms prefix all symbols in this manner. Both `_Z5printi`
-and `__Z5printi` demangle identically to `print(int)`, regardless of
-the host platform’s prefixing conventions.
+Mangled C++ and D symbols may optionally begin with an extra leading
+underscore, as some platforms prefix all symbols in this manner. Both
+`_Z5printi` and `__Z5printi` demangle identically to `print(int)`,
+regardless of the host platform’s prefixing conventions.
 
-Demangling uses the
+C++ and D demangling uses the
 [`c++filt`](https://sourceware.org/binutils/docs-2.24/binutils/c_002b_002bfilt.html)
 command. On GNU systems, this is part of
 [`binutils`](http://www.gnu.org/software/binutils/). If you need
 `demangle-mode` at all, you probably have `binutils` installed
 already.
+
+Rust demangling uses the
+[`rustfilt`](https://crates.io/crates/rustfilt) command. If you need
+Rust demangling, then install `rustfilt` using your native package
+manager or [using `cargo` as suggested
+here](https://crates.io/crates/rustfilt).
 
 ## Known Issues and Design Limitations
 
@@ -186,13 +191,13 @@ current as buffer contents change. However, this may surprise a user
 who turns on `demangle-mode` without `font-lock-mode`, then sees
 nothing happen.
 
-Running `c++filt` once per symbol is too slow. Instead, we demangle in
-an asynchronous background process. This boosts performance but
-complicates the implementation. Demangling directly within Emacs would
-be clean and fast. Unfortunately, I know of no pure Emacs Lisp
-implementation of name demangling and do not wish to create one
-myself. Demanglers as C libraries do exist, but Emacs offers no
-in-process way to call into such a library.
+Running an external demangler command once per symbol is too
+slow. Instead, we demangle in asynchronous background processes. This
+boosts performance but complicates the implementation. Demangling
+directly within Emacs would be clean and fast. Unfortunately, I know
+of no pure Emacs Lisp implementation of name demangling and do not
+wish to create one myself. Demanglers as C libraries do exist, but
+Emacs offers no in-process way to call into such a library.
 
 ## Project Status at a Glance
 

@@ -1,10 +1,10 @@
-;;; demangle-mode.el --- Automatically demangle C++ symbols -*- lexical-binding: t -*-
+;;; demangle-mode.el --- Automatically demangle C++, D, and Rust symbols -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2014-2020 Ben Liblit
 
 ;; Author: Ben Liblit <liblit@acm.org>
 ;; Created: 12 Feb 2014
-;; Version: 2.0
+;; Version: 2.1
 ;; Package-Requires: ((cl-lib "0.1") (emacs "24.3"))
 ;; Keywords: c tools
 ;; URL: https://github.com/liblit/demangle-mode
@@ -28,18 +28,18 @@
 ;;; Commentary:
 
 ;; `demangle-mode' is an Emacs minor mode that automatically demangles
-;; C++ symbols.  For example, in this mode:
+;; C++, D, and Rust symbols.  For example, in this mode:
 
 ;; - the mangled C++ symbol `_ZNSaIcED2Ev' displays as
 ;;   `std::allocator<char>::~allocator()'
-;;
-;; - the mangled C++ symbol `_ZTISt10ostrstream' displays as `typeinfo
-;;   for std::ostrstream'
 ;;
 ;; - the mangled C++ symbol `_GLOBAL__I_abc' displays as `global
 ;;   constructors keyed to abc'
 ;;
 ;; - the mangled D symbol `_D4test3fooAa' displays as `test.foo'
+;;
+;; - the mangled Rust symbol `_RNvNtNtCs1234_7mycrate3foo3bar3baz'
+;;   displays as `mycrate::foo::bar::baz'
 
 ;; See <https://github.com/liblit/demangle-mode#readme> for additional
 ;; documentation: usage suggestions, background & motivation,
@@ -62,7 +62,7 @@
 (require 'tq)
 
 (defgroup demangle nil
-  "Automatically demangle C++ symbols found in buffers."
+  "Automatically demangle C++, D, and Rust symbols found in buffers."
   :group 'tools)
 
 
@@ -77,7 +77,10 @@
      ("c++filt" "--no-strip-underscore"))
     ("D"
      "_D[_[:alnum:]]+"
-     ("c++filt" "--no-strip-underscore" "--format=dlang")))
+     ("c++filt" "--no-strip-underscore" "--format=dlang"))
+    ("Rust"
+     "_R[_[:alnum:]]+"
+     ("rustfilt")))
   "Languages that use mangled symbols, which `demangle-mode' can demangle."
   :group 'demangle
   :risky t
@@ -143,7 +146,7 @@ style.")
 (defvar demangle--queues (make-hash-table
 			  :test 'equal
 			  :size (length demangle-languages))
-  "Transaction queues for background demangling of C++ symbols.
+  "Transaction queues for background demangling of symbols.
 
 Queues are values in this hash table, keyed by the complete
 demangling filter command with arguments.")
@@ -264,9 +267,9 @@ positive prefix argument enables the mode; any other prefix
 argument disables it.  From Lisp, argument omitted or nil enables
 the mode, while `toggle' toggles the state.
 
-When Demangle mode is enabled, mangled C++ symbols appearing
-within the buffer are demangled, making their decoded C++ forms
-visible.
+When Demangle mode is enabled, mangled C++, D, and Rust symbols
+appearing within the buffer are demangled, making their decoded
+forms visible.
 
 Visit `https://github.com/liblit/demangle-mode/issues' or use
 \\[demangle-mode-submit-bug-report] to report bugs in
@@ -309,7 +312,7 @@ Visit `https://github.com/liblit/demangle-mode/issues' or use
 ;;  bug reporting
 ;;
 
-(defconst demangle-mode-version "2.0"
+(defconst demangle-mode-version "2.1"
   "Package version number for use in bug reports.")
 
 (defconst demangle-mode-maintainer-address "Ben Liblit <liblit@acm.org>"

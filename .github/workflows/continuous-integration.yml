@@ -23,6 +23,8 @@ jobs:
           - snapshot
       fail-fast: false
     steps:
+      - name: Install Rust demangler
+        run: cargo install rustfilt
       - name: Set up Emacs ${{ matrix.emacs_version }}
         uses: purcell/setup-emacs@master
         with:
